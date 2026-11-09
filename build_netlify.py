@@ -122,12 +122,21 @@ def build():
     else:
         print("  [!] Warning: Official User Manual PDF not found in source directory.")
 
-    # 4. Create Netlify redirect rules file (_redirects)
+    # 4. Create Netlify & Cloudflare redirect rules (_redirects) and edge headers (_headers)
     redirects_content = "/*    /index.html   200\n"
+    headers_content = """/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+"""
     for target_dir in [PUBLIC_DIR, DIST_DIR]:
         with open(target_dir / "_redirects", "w", encoding="utf-8") as f:
             f.write(redirects_content)
-    print("  [+] Created Netlify SPA redirects: public/_redirects & dist/_redirects")
+        with open(target_dir / "_headers", "w", encoding="utf-8") as f:
+            f.write(headers_content)
+    with open(ROOT_DIR / "_headers", "w", encoding="utf-8") as f:
+        f.write(headers_content)
+    print("  [+] Created Netlify & Cloudflare SPA redirects: public/_redirects & dist/_redirects")
+    print("  [+] Created Cloudflare Pages edge headers: public/_headers & dist/_headers")
 
     # 5. Base64 encode all files into safe JSON mapping
     # Eliminates all escaping issues with backticks, double quotes, and dollar signs
@@ -397,7 +406,9 @@ def build():
     for target_dir in [PUBLIC_DIR, DIST_DIR]:
         with open(target_dir / "index.html", "w", encoding="utf-8") as f:
             f.write(html_content)
-    print("  [+] Generated production Stlite HTML: public/index.html & dist/index.html")
+        with open(target_dir / "404.html", "w", encoding="utf-8") as f:
+            f.write(html_content)
+    print("  [+] Generated production Stlite HTML & SPA Fallback: public/index.html & public/404.html")
 
     print("=" * 70)
     print("[SUCCESS] NETLIFY STATIC BUILD COMPLETED SUCCESSFULLY!")
