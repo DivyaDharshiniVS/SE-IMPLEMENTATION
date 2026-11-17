@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 services:
   - type: web
     name: ai-nids-platform
@@ -10,3 +11,17 @@ services:
       - key: ENVIRONMENT
         value: production
     healthCheckPath: /_stcore/health
+=======
+services:
+  - type: web
+    name: ai-nids-platform
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: ENVIRONMENT
+        value: production
+    healthCheckPath: /_stcore/health
+>>>>>>> c57da0504ab09021388fc18f2c21d2bdf03b77a4

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 /*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
+=======
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+>>>>>>> c57da0504ab09021388fc18f2c21d2bdf03b77a4

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "version": 2,
   "buildCommand": "python build_netlify.py",
@@ -25,3 +26,32 @@
     }
   ]
 }
+=======
+{
+  "version": 2,
+  "buildCommand": "python build_netlify.py",
+  "outputDirectory": "public",
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+>>>>>>> c57da0504ab09021388fc18f2c21d2bdf03b77a4
