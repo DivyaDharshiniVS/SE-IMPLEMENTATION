@@ -14,6 +14,7 @@ Implements:
 
 import os
 import random
+import datetime
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, List, Tuple
@@ -450,3 +451,339 @@ def create_benchmark_csv_if_missing(file_path: str = "sample_network_traffic.csv
 
 # Initialize benchmark CSV on import
 create_benchmark_csv_if_missing()
+
+
+# ==============================================================================
+# INTERACTIVE NETWORK SCENARIOS & SINGLE PACKET INTRUSION ANALYZER
+# ==============================================================================
+
+PRESET_SCENARIOS: Dict[str, Dict[str, Any]] = {
+    "🟢 Scenario 1: Normal Web Traffic (TCP / HTTP / SF flag / 450 bytes)": {
+        "src_ip": "192.168.1.105",
+        "dst_ip": "10.0.0.5",
+        "protocol_type": "tcp",
+        "service": "http",
+        "flag": "SF",
+        "duration": 1.8,
+        "src_bytes": 450,
+        "dst_bytes": 3200,
+        "count": 5,
+        "srv_count": 4,
+        "serror_rate": 0.0,
+        "same_srv_rate": 1.0,
+        "dst_host_count": 25,
+        "dst_host_srv_count": 50,
+        "description": "Legitimate HTTPS web session with completed 3-way handshake (SF flag) and balanced bidirectional payload transfer."
+    },
+    "🔴 Scenario 2: DoS SYN Flood Attack (TCP / HTTP / S0 flag / High packet count)": {
+        "src_ip": "45.33.32.156",
+        "dst_ip": "10.0.0.5",
+        "protocol_type": "tcp",
+        "service": "http",
+        "flag": "S0",
+        "duration": 0.0,
+        "src_bytes": 64,
+        "dst_bytes": 0,
+        "count": 380,
+        "srv_count": 350,
+        "serror_rate": 0.98,
+        "same_srv_rate": 0.95,
+        "dst_host_count": 255,
+        "dst_host_srv_count": 5,
+        "description": "High-velocity SYN Flood flooding port 80/443 without completing handshakes (S0 flag) to exhaust server connection tables."
+    },
+    "🟠 Scenario 3: Port Scan / Probe Attack (TCP / Multiple ports / REJ flag)": {
+        "src_ip": "198.51.100.84",
+        "dst_ip": "10.0.0.12",
+        "protocol_type": "tcp",
+        "service": "private",
+        "flag": "REJ",
+        "duration": 0.05,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "count": 85,
+        "srv_count": 2,
+        "serror_rate": 0.65,
+        "same_srv_rate": 0.08,
+        "dst_host_count": 255,
+        "dst_host_srv_count": 3,
+        "description": "Automated reconnaissance port sweep across closed ports triggering RST/REJ responses to discover network topology."
+    },
+    "🟣 Scenario 4: SSH Brute Force Attempt (TCP / SSH / S0 flag / 0 payload bytes)": {
+        "src_ip": "203.0.113.42",
+        "dst_ip": "10.0.0.22",
+        "protocol_type": "tcp",
+        "service": "ssh",
+        "flag": "S0",
+        "duration": 0.1,
+        "src_bytes": 0,
+        "dst_bytes": 0,
+        "count": 210,
+        "srv_count": 190,
+        "serror_rate": 0.92,
+        "same_srv_rate": 0.98,
+        "dst_host_count": 255,
+        "dst_host_srv_count": 2,
+        "description": "Rapid repeated connection initiations to port 22 (SSH) with S0 flag and 0 payload bytes indicating dictionary credential stuffing."
+    },
+    "⚡ Custom Manual Packet Input (Custom Protocol, Service, Duration, Bytes, Flags, IPs)": {
+        "src_ip": "172.16.0.45",
+        "dst_ip": "10.0.0.1",
+        "protocol_type": "tcp",
+        "service": "http",
+        "flag": "SF",
+        "duration": 0.5,
+        "src_bytes": 350,
+        "dst_bytes": 1200,
+        "count": 10,
+        "srv_count": 8,
+        "serror_rate": 0.0,
+        "same_srv_rate": 0.9,
+        "dst_host_count": 40,
+        "dst_host_srv_count": 35,
+        "description": "User-defined custom network packet configuration for arbitrary penetration testing and parameter exploration."
+    }
+}
+
+PROTOCOL_EXPLANATIONS = {
+    "tcp": {
+        "name": "Transmission Control Protocol (TCP)",
+        "summary": "Connection-oriented transport protocol establishing reliable, in-order byte streams via 3-way handshakes.",
+        "details": "TCP maintains connection state tracking sequence and acknowledgment numbers. It relies on a three-way handshake (SYN, SYN-ACK, ACK) before data transfer begins. Vulnerable to state table exhaustion when clients flood SYN requests without acknowledging (SYN Flooding)."
+    },
+    "udp": {
+        "name": "User Datagram Protocol (UDP)",
+        "summary": "Connectionless, lightweight datagram protocol with no handshake or flow guarantees.",
+        "details": "UDP provides minimal overhead for time-sensitive transmissions like DNS (port 53), VoIP, and NTP. Because it lacks handshakes, source IPs can be readily spoofed in Distributed Denial of Service (DDoS) reflection and amplification vectors."
+    },
+    "icmp": {
+        "name": "Internet Control Message Protocol (ICMP)",
+        "summary": "Network diagnostic and error signaling protocol used by ping, traceroute, and route management.",
+        "details": "ICMP packets do not carry application payloads; instead, they communicate operational feedback such as Echo Request/Reply, Destination Unreachable, and Time-to-Live Exceeded. Attackers frequently utilize ICMP sweeps for horizontal network discovery."
+    }
+}
+
+FLAG_EXPLANATIONS = {
+    "SF": {
+        "name": "SF (Established - Normal Finish)",
+        "meaning": "Normal connection establishment and proper termination. Full 3-way handshake was established and completed cleanly.",
+        "security_context": "Typical of legitimate user traffic. Indicates standard client-server communication with expected TCP teardown."
+    },
+    "S0": {
+        "name": "S0 (SYN Sent - No Response / Half-Open)",
+        "meaning": "Connection initiation seen (SYN sent), but zero response/acknowledgment was returned by destination or completed by client.",
+        "security_context": "Key signature of DoS SYN Flood attacks (saturating connection queues) or stealth TCP reconnaissance targeting filtered/unresponsive IPs."
+    },
+    "REJ": {
+        "name": "REJ (Rejected by Destination)",
+        "meaning": "Connection attempt explicitly refused by destination host (RST packet returned to close socket).",
+        "security_context": "Primary fingerprint of network port probing and vulnerability scanners attempting connections against closed listener ports."
+    },
+    "RSTO": {
+        "name": "RSTO (Reset by Originator)",
+        "meaning": "Connection abruptly reset by the client originator before standard data transfer or handshake was completed.",
+        "security_context": "Often associated with aggressive scanners tearing down connections early to avoid IDS state tracking or rapid connection abortions."
+    },
+    "RSTR": {
+        "name": "RSTR (Reset by Responder)",
+        "meaning": "Connection terminated abruptly by remote responder or intermediate gateway firewall.",
+        "security_context": "Can indicate active firewall drop rules or server-side connection drops caused by malformed or prohibited traffic payloads."
+    }
+}
+
+
+def analyze_single_packet(packet: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Executes live machine learning inference on an individual network packet flow:
+    1. Preprocesses fields into numerical features aligned with the trained Random Forest.
+    2. Runs model inference to determine verdict (Normal vs Malicious) and confidence %.
+    3. Categorizes specific threat vector and severity level.
+    4. Generates deep natural-language protocol and decision explanations.
+    5. Formulates actionable, ready-to-deploy firewall mitigation commands.
+    """
+    model, metrics, feature_names = train_nids_model()
+
+    # Normalize packet dictionary into 1-row DataFrame
+    proto = str(packet.get("protocol_type", "tcp")).lower().strip()
+    srv = str(packet.get("service", "http")).lower().strip()
+    flag = str(packet.get("flag", "SF")).upper().strip()
+    src_ip = str(packet.get("src_ip", "192.168.1.100")).strip()
+    dst_ip = str(packet.get("dst_ip", "10.0.0.1")).strip()
+    duration = float(packet.get("duration", 0.0))
+    src_bytes = int(packet.get("src_bytes", 0))
+    dst_bytes = int(packet.get("dst_bytes", 0))
+    count = int(packet.get("count", 1))
+    srv_count = int(packet.get("srv_count", 1))
+    serror_rate = float(packet.get("serror_rate", 0.0))
+    same_srv_rate = float(packet.get("same_srv_rate", 1.0))
+    dst_host_count = int(packet.get("dst_host_count", 1))
+    dst_host_srv_count = int(packet.get("dst_host_srv_count", 1))
+
+    df_single = pd.DataFrame([{
+        "duration": duration,
+        "protocol_type": proto,
+        "service": srv,
+        "flag": flag,
+        "src_bytes": src_bytes,
+        "dst_bytes": dst_bytes,
+        "count": count,
+        "srv_count": srv_count,
+        "serror_rate": serror_rate,
+        "same_srv_rate": same_srv_rate,
+        "dst_host_count": dst_host_count,
+        "dst_host_srv_count": dst_host_srv_count
+    }])
+
+    # Preprocess feature vector
+    X_matrix, aligned_feature_names = preprocess_features(df_single, trained_feature_names=feature_names)
+
+    # Live Random Forest inference
+    pred = model.predict(X_matrix)[0]
+    proba = model.predict_proba(X_matrix)[0]
+    classes_list = list(model.classes_)
+    malicious_idx = classes_list.index("Malicious") if "Malicious" in classes_list else 1
+    normal_idx = classes_list.index("Normal") if "Normal" in classes_list else 0
+
+    is_malicious = (pred == "Malicious")
+    malicious_proba = float(proba[malicious_idx])
+    normal_proba = float(proba[normal_idx])
+
+    if is_malicious:
+        confidence = round(malicious_proba * 100, 1)
+        verdict = "🔴 MALICIOUS DETECTED"
+    else:
+        confidence = round(normal_proba * 100, 1)
+        verdict = "🟢 NORMAL TRAFFIC"
+
+    # Threat classification & severity mapping
+    if is_malicious:
+        if srv in ["ssh", "ftp", "telnet"]:
+            threat_cat = "Unauthorized Access (SSH Brute Force)"
+            severity = "Critical"
+            mitigation_text = f"Terminate active session and enforce IP blocklist on {src_ip}."
+        elif flag in ["REJ", "RSTO"] or same_srv_rate <= 0.25 or (dst_host_count >= 200 and srv_count <= 10):
+            threat_cat = "PortScan / Network Probe"
+            severity = "High"
+            mitigation_text = f"Block scanner source IP {src_ip} at border gateway."
+        elif count >= 100 or serror_rate >= 0.5 or flag == "S0":
+            threat_cat = "DoS Attack (SYN Flood)"
+            severity = "Critical"
+            mitigation_text = f"Apply iptables SYN rate-limit & drop traffic from {src_ip}."
+        else:
+            threat_cat = "Malicious Incursion (Anomaly)"
+            severity = "High"
+            mitigation_text = f"Drop connection and blacklist {src_ip}."
+    else:
+        threat_cat = "Normal Web Traffic"
+        severity = "None"
+        mitigation_text = "Traffic legitimate; no mitigation required."
+
+    # Protocol & Flag Explanations
+    proto_info = PROTOCOL_EXPLANATIONS.get(proto, {
+        "name": f"{proto.upper()} Protocol",
+        "summary": "Standard network layer transport protocol.",
+        "details": "Handles end-to-end packet transport between client socket and host service."
+    })
+
+    flag_info = FLAG_EXPLANATIONS.get(flag, {
+        "name": f"Flag {flag}",
+        "meaning": "Non-standard TCP control flag state.",
+        "security_context": "Evaluated in conjunction with connection count and payload distributions."
+    })
+
+    # AI Decision Rationale formulation
+    if is_malicious:
+        if threat_cat == "DoS Attack (SYN Flood)":
+            rationale = (
+                f"The Random Forest model classified this traffic as **MALICIOUS (DoS SYN Flood)** with **{confidence}% confidence**. "
+                f"The key decision triggers include: connection flag is **{flag}** (half-open unacknowledged connection), "
+                f"unusually high connection rate (`count = {count}`, `srv_count = {srv_count}`), and an elevated SYN error rate (`serror_rate = {serror_rate}`). "
+                f"Combined with zero response payload (`dst_bytes = {dst_bytes}`), this perfectly matches the signature of an intentional connection table exhaustion attack."
+            )
+        elif threat_cat == "PortScan / Network Probe":
+            rationale = (
+                f"The Random Forest model classified this packet as **MALICIOUS (PortScan / Network Probe)** with **{confidence}% confidence**. "
+                f"Key decision drivers: TCP flag is **{flag}** ({flag_info['name']}), accompanied by elevated destination host saturation "
+                f"(`dst_host_count = {dst_host_count}`) and very low same-service rate (`same_srv_rate = {same_srv_rate}`). "
+                f"This behavioral pattern indicates automated reconnaissance probing across multiple sockets."
+            )
+        else:
+            rationale = (
+                f"The Random Forest model classified this packet as **MALICIOUS ({threat_cat})** with **{confidence}% confidence**. "
+                f"Targeted service '{srv}' received rapid repeated access requests (`count = {count}`) with flag **{flag}** and "
+                f"minimal payload balance (`src_bytes = {src_bytes}`, `dst_bytes = {dst_bytes}`), triggering anomaly splits in the tree ensemble."
+            )
+    else:
+        rationale = (
+            f"The Random Forest model classified this packet as **NORMAL TRAFFIC** with **{confidence}% confidence**. "
+            f"The packet exhibits healthy connection mechanics: established connection flag **{flag}** (clean handshake completion), "
+            f"balanced bidirectional payload exchange (`src_bytes = {src_bytes}` B, `dst_bytes = {dst_bytes}` B), "
+            f"low error frequency (`serror_rate = {serror_rate}`), and normal connection rates (`count = {count}`)."
+        )
+
+    # Actionable Firewall Mitigation Commands
+    if is_malicious:
+        firewall_commands = (
+            f"# ========================================================\n"
+            f"# SOC AUTOMATED MITIGATION PLAYBOOK - THREAT: {threat_cat.upper()}\n"
+            f"# Attacker IP: {src_ip} | Target: {dst_ip} | Proto: {proto.upper()} | Port/Srv: {srv}\n"
+            f"# ========================================================\n"
+            f"# 1. Immediately drop all incoming traffic from malicious source IP:\n"
+            f"iptables -A INPUT -s {src_ip} -j DROP\n\n"
+            f"# 2. Rate-limit incoming {proto.upper()} connection attempts on target service '{srv}':\n"
+            f"iptables -A INPUT -p {proto} --dport {'80' if srv=='http' else '22' if srv=='ssh' else '8080'} -m limit --limit 25/minute --limit-burst 100 -j ACCEPT\n\n"
+            f"# 3. Drop invalid TCP flag combinations and half-open SYN packets:\n"
+            f"iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP\n"
+            f"iptables -A INPUT -p tcp --tcp-flags SYN,ACK SYN,ACK -m state --state NEW -j DROP\n\n"
+            f"# 4. Log security incident event to syslog / SIEM collector:\n"
+            f"iptables -A INPUT -s {src_ip} -j LOG --log-prefix \"NIDS_ALERT_{severity.upper()}: \" --log-level 4"
+        )
+    else:
+        firewall_commands = (
+            f"# ========================================================\n"
+            f"# SOC STATEFUL FIREWALL POLICY - VERDICT: VERIFIED LEGITIMATE\n"
+            f"# Source: {src_ip} | Destination: {dst_ip} | Service: {srv}\n"
+            f"# ========================================================\n"
+            f"# Traffic verified legitimate ({confidence}% normal confidence).\n"
+            f"# Allow established and related return traffic:\n"
+            f"iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT\n"
+            f"iptables -A INPUT -p {proto} -s {src_ip} --dport {'80' if srv=='http' else '443'} -j ACCEPT"
+        )
+
+    incident_id = f"INC-{datetime.datetime.now().strftime('%Y%m%d')}-{random.randint(1000, 9999)}"
+
+    return {
+        "incident_id": incident_id,
+        "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "verdict": verdict,
+        "is_malicious": is_malicious,
+        "threat_category": threat_cat,
+        "severity": severity,
+        "confidence": confidence,
+        "malicious_proba": round(malicious_proba * 100, 1),
+        "normal_proba": round(normal_proba * 100, 1),
+        "packet_features": {
+            "src_ip": src_ip,
+            "dst_ip": dst_ip,
+            "protocol_type": proto,
+            "service": srv,
+            "flag": flag,
+            "duration": duration,
+            "src_bytes": src_bytes,
+            "dst_bytes": dst_bytes,
+            "count": count,
+            "srv_count": srv_count,
+            "serror_rate": serror_rate,
+            "same_srv_rate": same_srv_rate,
+            "dst_host_count": dst_host_count,
+            "dst_host_srv_count": dst_host_srv_count
+        },
+        "encoded_vector_shape": f"(1, {X_matrix.shape[1]})",
+        "encoded_features_sample": dict(zip(aligned_feature_names[:8], [round(float(v), 2) for v in X_matrix[0][:8]])),
+        "protocol_info": proto_info,
+        "flag_info": flag_info,
+        "rationale": rationale,
+        "mitigation_text": mitigation_text,
+        "firewall_commands": firewall_commands
+    }
+

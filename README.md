@@ -2,6 +2,14 @@
 ### "Real-Time Packet Inspection. Intelligent Anomaly Detection. Robust Cyber Defense."
 #### Academic Software Engineering Capstone Project • Computer Science & Engineering (CSE)
 
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Portal-black?style=for-the-badge&logo=vercel)](https://ai-nids-platform-ashy.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/DivyaDharshiniVS/ai-nids-platform)
+[![Python 3.11](https://img.shields.io/badge/Python-3.11%20%7C%203.13-3776AB?style=for-the-badge&logo=python)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.39-FF4B4B?style=for-the-badge&logo=streamlit)](https://streamlit.io)
+
+🌐 **Official Live Edge Portal:** [https://ai-nids-platform-ashy.vercel.app](https://ai-nids-platform-ashy.vercel.app)  
+📦 **Official GitHub Repository:** [https://github.com/DivyaDharshiniVS/ai-nids-platform](https://github.com/DivyaDharshiniVS/ai-nids-platform)
+
 ---
 
 ## 📌 Executive Summary & Project Vision

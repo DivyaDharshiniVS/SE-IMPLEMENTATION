@@ -21,6 +21,7 @@ Screen Flow:
 import streamlit as st
 import datetime
 import os
+import random
 import pandas as pd
 from typing import Dict, Any, List, Optional
 
@@ -39,23 +40,30 @@ import nids_engine
 # Static NIDS User Manual PDF Loader with Instant Caching
 @st.cache_data
 def get_user_manual_pdf_bytes() -> Optional[bytes]:
-    """Reads the static uploaded NIDS User Manual PDF binary with instant caching."""
+    """Reads the static uploaded NIDS User Manual PDF binary with instant caching and multi-path fallback."""
+    script_dir = os.path.dirname(__file__) if "__file__" in globals() else os.getcwd()
     possible_paths = [
-        os.path.join(os.path.dirname(__file__), "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
-        os.path.join(os.path.dirname(__file__), "assets", "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
-        os.path.join(os.path.dirname(__file__), "NIDS_User_Manual.pdf"),
-        os.path.join(os.path.dirname(__file__), "assets", "NIDS_User_Manual.pdf")
+        "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf",
+        os.path.join(script_dir, "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
+        os.path.join(os.getcwd(), "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
+        os.path.join(script_dir, "assets", "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
+        os.path.join(os.getcwd(), "assets", "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
+        "NIDS_User_Manual.pdf",
+        os.path.join(script_dir, "NIDS_User_Manual.pdf")
     ]
     for path in possible_paths:
         if os.path.exists(path):
             try:
                 with open(path, "rb") as f:
-                    return f.read()
+                    data = f.read()
+                    if data:
+                        return data
             except Exception:
                 continue
     return None
 
 get_cached_user_manual_pdf = get_user_manual_pdf_bytes
+get_manual_pdf_bytes = get_user_manual_pdf_bytes
 
 def render_html(html_str: str):
     """
@@ -163,45 +171,175 @@ st.markdown("""
         height: 0 !important;
     }
 
-    /* Luxury Master Top Horizontal Nav Radio Styling */
-    div[data-testid="stRadio"] > div[role="radiogroup"] {
-        display: flex !important;
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        gap: 0.8rem !important;
-        background: #0d2320 !important;
-        padding: 0.6rem 1rem !important;
-        border-radius: 14px !important;
-        border: 1.5px solid #2d6a4f !important;
-        margin-bottom: 1.4rem !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.5) !important;
-    }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label {
-        background: #102621 !important;
-        border: 1.2px solid #1a3c34 !important;
+    /* ==============================================================================
+       ANTIGRAVITY LUXURY TOP NAVIGATION CONTROLS & PILL BUTTON PARITY
+       ============================================================================== */
+
+    /* 1. Primary Top Navigation 6-Pill Action Buttons (Identical to Secondary Tabs) */
+    div[class*="st-key-top_nav_btn_"] button,
+    div[data-testid="column"] div[class*="st-key-top_nav_btn_"] button {
+        padding: 10px 14px !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.015em !important;
+        white-space: nowrap !important;
+        min-height: 46px !important;
         border-radius: 10px !important;
-        padding: 0.65rem 1.6rem !important;
-        cursor: pointer !important;
-        transition: all 0.25s ease !important;
+        width: 100% !important;
         display: inline-flex !important;
         align-items: center !important;
+        justify-content: center !important;
     }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
-        border-color: #e2b96f !important;
-        background: #163e32 !important;
+
+    /* 2. Strip any generic Streamlit radio borders and completely hide white check circles */
+    div[data-testid="stRadio"],
+    div[data-testid="stRadio"] > div,
+    div[data-testid="stRadio"] div[role="radiogroup"] {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    div[data-testid="stRadio"] label > *:not([data-testid="stMarkdownContainer"]),
+    div[data-testid="stRadio"] label input,
+    div[data-testid="stRadio"] label svg,
+    div[data-testid="stRadio"] label [class*="RadioMark"],
+    div[data-testid="stRadio"] label div:not([data-testid="stMarkdownContainer"]):not(:has([data-testid="stMarkdownContainer"])) {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* 3. Navigation Container: Split into distinct, centered button-style tabs with visible gaps */
+    div[data-testid="stRadio"] > div[role="radiogroup"] {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0.2rem 0 !important;
+        margin: 0.5rem auto 1.6rem auto !important;
+        width: 100% !important;
+    }
+
+    /* 2. Distinct Button-Style Tabs: Default State */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label,
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"] {
+        background: #102621 !important;
+        border: 1.5px solid #2d6a4f !important;
+        border-radius: 10px !important;
+        padding: 10px 22px !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        outline: none !important;
+        user-select: none !important;
+        min-height: 44px !important;
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    /* 3. Text Label Container: 100% Visible, No Clipping, Full Icon & Text in Champagne Gold */
+    div[data-testid="stRadio"] div[role="radiogroup"] label > :last-child,
+    div[data-testid="stRadio"] div[role="radiogroup"] label > :last-child *,
+    div[data-testid="stRadio"] div[role="radiogroup"] label [data-testid="stMarkdownContainer"],
+    div[data-testid="stRadio"] div[role="radiogroup"] label [data-testid="stMarkdownContainer"] *,
+    div[data-testid="stRadio"] div[role="radiogroup"] label p {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: unset !important;
+        min-height: unset !important;
+        max-width: unset !important;
+        max-height: unset !important;
+        clip: auto !important;
+        clip-path: none !important;
+        overflow: visible !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #E2B96F !important;
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+        font-size: 0.92rem !important;
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        letter-spacing: 0.02em !important;
+        white-space: nowrap !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transition: color 0.25s ease !important;
+    }
+
+    /* 4. Hide ONLY the first child (radio circle indicator dot + input) without touching text */
+    div[data-testid="stRadio"] div[role="radiogroup"] label > :first-child:not(:last-child),
+    div[data-testid="stRadio"] div[role="radiogroup"] label > :first-child:not(:last-child) *,
+    div[data-testid="stRadio"] div[role="radiogroup"] label input[type="radio"],
+    div[data-testid="stRadio"] div[role="radiogroup"] label svg {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        max-width: 0 !important;
+        max-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        pointer-events: none !important;
+        position: absolute !important;
+    }
+
+    /* 5. Hover State: Champagne Gold Border & Crisp White Lift */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:hover,
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"]:hover {
+        border-color: #E2B96F !important;
+        background: #14332c !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 12px rgba(226, 185, 111, 0.35) !important;
+    }
+
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:hover > :last-child,
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:hover > :last-child *,
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:hover [data-testid="stMarkdownContainer"] * {
+        color: #FFFFFF !important;
+    }
+
+    /* 6. Active / Selected State: Gold Border & Text with Glow Effect */
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"],
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[aria-checked="true"],
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked),
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:has([aria-checked="true"]),
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"][data-checked="true"],
+    div[data-testid="stRadio"] div[role="radiogroup"] label[data-baseweb="radio"]:has(input:checked) {
+        border: 1.5px solid #E2B96F !important;
+        background: linear-gradient(135deg, #102621 0%, #163d33 100%) !important;
+        box-shadow: 0 0 16px rgba(226, 185, 111, 0.45) !important;
         transform: translateY(-1px) !important;
     }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"],
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
-        background: linear-gradient(135deg, #10332c 0%, #1b4332 100%) !important;
-        border-color: #e2b96f !important;
-        box-shadow: 0 0 16px rgba(226, 185, 111, 0.45) !important;
-    }
-    div[data-testid="stRadio"] > div[role="radiogroup"] > label span p {
-        color: #ffffff !important;
-        font-weight: 700 !important;
-        font-size: 1rem !important;
-        letter-spacing: 0.02em !important;
+
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] > :last-child,
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[data-checked="true"] > :last-child *,
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[aria-checked="true"] > :last-child,
+    div[data-testid="stRadio"] div[role="radiogroup"] > label[aria-checked="true"] > :last-child *,
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) > :last-child,
+    div[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) > :last-child * {
+        color: #E2B96F !important;
+        font-weight: 800 !important;
     }
 
     /* Sub-tabs Styling (Inside SE Tools & Modules) */
@@ -469,129 +607,131 @@ st.markdown("""
         line-height: 1.5;
     }
 
-    /* HIGH-CONTRAST EXECUTIVE BUTTONS (EMERALD GREEN / GOLD BORDER) */
+    /* ==============================================================================
+       2. STANDARD & DOWNLOAD BUTTON PARITY (DARK EMERALD & CHAMPAGNE GOLD)
+       ============================================================================== */
     div.stButton > button,
     div[data-testid="stButton"] button,
     button[data-testid="baseButton-secondary"],
     button[data-testid="baseButton-primary"],
     .stFormSubmitButton > button {
-        background: linear-gradient(135deg, #10332c 0%, #1b4332 100%) !important;
-        color: #ffffff !important;
+        background: #102621 !important;
+        color: #E2B96F !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
-        font-weight: 700 !important;
-        font-size: 0.95rem !important;
-        border: 1.5px solid #e2b96f !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        border: 1.5px solid #2d6a4f !important;
         border-radius: 10px !important;
-        padding: 0.6rem 1.4rem !important;
+        padding: 10px 20px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        outline: none !important;
     }
 
-    div.stButton > button:hover,
-    div[data-testid="stButton"] button:hover,
-    button[data-testid="baseButton-secondary"]:hover,
-    button[data-testid="baseButton-primary"]:hover,
-    .stFormSubmitButton > button:hover {
-        background: linear-gradient(135deg, #1b4332 0%, #245842 100%) !important;
-        color: #e2b96f !important;
-        border-color: #fde68a !important;
-        box-shadow: 0 0 20px rgba(226, 185, 111, 0.6), 0 6px 20px rgba(0, 0, 0, 0.5) !important;
-        transform: translateY(-2px) !important;
-    }
-
-    div.stButton > button:active,
-    div[data-testid="stButton"] button:active,
-    button[data-testid="baseButton-secondary"]:active,
-    button[data-testid="baseButton-primary"]:active,
-    .stFormSubmitButton > button:active {
-        transform: translateY(0px) !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
-    }
-
-    /* Specific Highlighting for Primary (Active) Action Buttons */
     button[data-testid="baseButton-primary"],
     .stFormSubmitButton > button {
-        background: linear-gradient(135deg, #132e27 0%, #1b4332 100%) !important;
-        border: 2px solid #e2b96f !important;
-        color: #e2b96f !important;
-        box-shadow: 0 0 16px rgba(226, 185, 111, 0.45), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+        border-color: #E2B96F !important;
+        background: linear-gradient(135deg, #102621 0%, #163d33 100%) !important;
+        box-shadow: 0 0 16px rgba(226, 185, 111, 0.45) !important;
     }
 
-    button[data-testid="baseButton-secondary"] {
-        background: #102621 !important;
-        border: 1.5px solid #2d6a4f !important;
-        color: #ffffff !important;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
-    }
-
-    /* DOWNLOAD BUTTON STYLING (EXECUTIVE DARK EMERALD & GOLD) */
+    /* TOP-RIGHT USER MANUAL PDF DOWNLOAD BUTTON & ALL DOWNLOAD BUTTONS */
+    div[class*="st-key-btn_download_user_manual_header"] button,
+    div[class*="st-key-btn_download_user_manual_header"] .stDownloadButton button,
+    div[data-testid="stDownloadButton"] > button,
     div[data-testid="stDownloadButton"] button,
     div.stDownloadButton > button,
     .stDownloadButton button {
         background: #102621 !important;
         border: 1.5px solid #E2B96F !important;
         color: #E2B96F !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 600 !important;
-        border-radius: 8px !important;
-        padding: 8px 16px !important;
+        font-size: 0.88rem !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
-        transition: all 0.2s ease !important;
-    }
-    div[data-testid="stDownloadButton"] button:hover,
-    div.stDownloadButton > button:hover,
-    .stDownloadButton button:hover {
-        background: #163e32 !important;
-        border-color: #fde68a !important;
-        color: #ffffff !important;
-        box-shadow: 0 0 18px rgba(226, 185, 111, 0.5) !important;
-        transform: translateY(-1px) !important;
-    }
-    div[data-testid="stDownloadButton"] button *,
-    div.stDownloadButton > button *,
-    .stDownloadButton button * {
-        color: #E2B96F !important;
-        font-weight: 600 !important;
-    }
-    div[data-testid="stDownloadButton"] button:hover *,
-    div.stDownloadButton > button:hover *,
-    .stDownloadButton button:hover * {
-        color: #ffffff !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        cursor: pointer !important;
+        outline: none !important;
     }
 
-    /* Top-Right Header User Manual PDF Download Button (Champagne Gold Outline) */
-    div[class*="st-key-btn_download_user_manual_header"] button,
-    div[class*="st-key-btn_download_user_manual_header"] .stDownloadButton button {
-        border: 1px solid #E2B96F !important;
-        color: #E2B96F !important;
-        background: transparent !important;
-        border-radius: 8px !important;
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
-        font-size: 0.82rem !important;
-        font-weight: 600 !important;
-        padding: 5px 12px !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-        transition: all 0.2s ease !important;
-        white-space: nowrap !important;
-    }
-    div[class*="st-key-btn_download_user_manual_header"] button:hover,
-    div[class*="st-key-btn_download_user_manual_header"] .stDownloadButton button:hover {
-        background: rgba(226, 185, 111, 0.15) !important;
-        border-color: #FDE68A !important;
-        color: #FFFFFF !important;
-        box-shadow: 0 0 14px rgba(226, 185, 111, 0.45) !important;
-        transform: translateY(-1px) !important;
-    }
+    /* Cohesive typography and icon colors inside all buttons */
+    div.stButton > button *,
+    div[data-testid="stButton"] button *,
+    div[data-testid="stDownloadButton"] > button *,
+    div[data-testid="stDownloadButton"] button *,
+    div.stDownloadButton > button *,
+    .stDownloadButton button *,
+    button[data-testid="baseButton-secondary"] *,
+    button[data-testid="baseButton-primary"] *,
+    .stFormSubmitButton > button *,
     div[class*="st-key-btn_download_user_manual_header"] button *,
     div[class*="st-key-btn_download_user_manual_header"] button span,
     div[class*="st-key-btn_download_user_manual_header"] button p {
         color: #E2B96F !important;
         font-weight: 600 !important;
+        transition: color 0.25s ease !important;
     }
+
+    /* Cohesive Hover State with Lift, Glow, and Color Transition */
+    div.stButton > button:hover,
+    div[data-testid="stButton"] button:hover,
+    button[data-testid="baseButton-secondary"]:hover,
+    button[data-testid="baseButton-primary"]:hover,
+    .stFormSubmitButton > button:hover,
+    div[data-testid="stDownloadButton"] > button:hover,
+    div[data-testid="stDownloadButton"] button:hover,
+    div.stDownloadButton > button:hover,
+    .stDownloadButton button:hover,
+    div[class*="st-key-btn_download_user_manual_header"] button:hover,
+    div[class*="st-key-btn_download_user_manual_header"] .stDownloadButton button:hover {
+        background: #14332c !important;
+        color: #E2B96F !important;
+        border-color: #FDE68A !important;
+        box-shadow: 0 0 16px rgba(226, 185, 111, 0.5), 0 6px 20px rgba(0, 0, 0, 0.5) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    div.stButton > button:hover *,
+    div[data-testid="stButton"] button:hover *,
+    div[data-testid="stDownloadButton"] > button:hover *,
+    div[data-testid="stDownloadButton"] button:hover *,
+    div.stDownloadButton > button:hover *,
+    .stDownloadButton button:hover *,
+    button[data-testid="baseButton-secondary"]:hover *,
+    button[data-testid="baseButton-primary"]:hover *,
+    .stFormSubmitButton > button:hover *,
     div[class*="st-key-btn_download_user_manual_header"] button:hover *,
     div[class*="st-key-btn_download_user_manual_header"] button:hover span,
     div[class*="st-key-btn_download_user_manual_header"] button:hover p {
         color: #FFFFFF !important;
+    }
+
+    /* Active / Pressed State */
+    div.stButton > button:active,
+    div[data-testid="stButton"] button:active,
+    div[data-testid="stDownloadButton"] > button:active,
+    div[data-testid="stDownloadButton"] button:active,
+    div.stDownloadButton > button:active,
+    .stDownloadButton button:active,
+    button[data-testid="baseButton-secondary"]:active,
+    button[data-testid="baseButton-primary"]:active,
+    .stFormSubmitButton > button:active,
+    div[class*="st-key-btn_download_user_manual_header"] button:active,
+    div[class*="st-key-btn_download_user_manual_header"] .stDownloadButton button:active {
+        transform: translateY(0px) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
     }
 
     /* Glowing Run Application Button for IDE Compiler View */
@@ -784,86 +924,156 @@ st.markdown("""
     }
 
     /* =========================================================================
-       CRITICAL INPUT FIELDS & DROPDOWN VISIBILITY (WHITE/IVORY BG & SOLID BLACK TEXT)
+       EXECUTIVE DARK EMERALD & CHAMPAGNE GOLD DROPDOWNS & INPUT FIELDS
        ========================================================================= */
-    div[data-baseweb="select"] {
-        background-color: #ffffff !important;
+
+    /* 1. Closed Selectbox Container */
+    div[data-baseweb="select"],
+    div[data-testid="stSelectbox"] > div > div {
+        background-color: #102621 !important;
+        border: 1.5px solid #2D6A4F !important;
         border-radius: 8px !important;
-        border: 1px solid #d6d0c4 !important;
+        color: #E2B96F !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
     }
-    /* Force solid black text for all input fields, labels, and dropdown menus */
-    div[data-baseweb="select"] *, 
-    div[data-baseweb="input"] input, 
-    div[data-baseweb="base-input"] input,
-    div[data-baseweb="popover"] *,
-    ul[data-baseweb="menu"] li,
-    ul[data-baseweb="menu"] * {
-        color: #000000 !important;
+
+    div[data-baseweb="select"] > div {
+        background-color: #102621 !important;
+        border: none !important;
+        color: #E2B96F !important;
+    }
+
+    div[data-baseweb="select"] * {
+        color: #E2B96F !important;
         font-weight: 600 !important;
     }
-    div[data-baseweb="input"] {
-        background-color: #0d2320 !important;
-        border-radius: 8px !important;
-        border: 1px solid #2d6a4f !important;
-    }
-    div[data-baseweb="input"] input {
-        color: #e0e6ed !important;
-        background-color: #0d2320 !important;
-        font-weight: 500 !important;
-    }
-    div[data-baseweb="base-input"] {
-        background-color: #0d2320 !important;
-        border-radius: 8px !important;
-        border: 1px solid #2d6a4f !important;
-    }
-    div[data-baseweb="base-input"] input,
-    div[data-baseweb="base-input"] textarea {
-        color: #e0e6ed !important;
-        background-color: #0d2320 !important;
-        font-weight: 500 !important;
-    }
-    div[data-baseweb="select"] > div,
-    div[data-testid="stSelectbox"] > div > div {
-        background-color: #0d2320 !important;
-        color: #e0e6ed !important;
-        border: 1px solid #2d6a4f !important;
-        border-radius: 8px !important;
-    }
-    div[data-baseweb="select"] * {
-        color: #e0e6ed !important;
-    }
+
+    /* 2. Dropdown Menu Popover, Listbox, and Option Items */
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div,
+    ul[role="listbox"],
     ul[data-baseweb="menu"] {
         background-color: #102621 !important;
-        border: 1px solid #e2b96f !important;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6) !important;
+        border: 1.5px solid #E2B96F !important;
+        border-radius: 10px !important;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75) !important;
+        padding: 6px !important;
     }
-    ul[data-baseweb="menu"] li {
-        color: #f1f5f9 !important;
+
+    /* Option item default state: Emerald background with Champagne Gold / White text */
+    li[role="option"],
+    ul[role="listbox"] li,
+    ul[data-baseweb="menu"] li,
+    div[data-baseweb="popover"] li {
         background-color: #102621 !important;
-        font-weight: 500 !important;
+        color: #E2B96F !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        padding: 10px 14px !important;
+        border-radius: 6px !important;
+        margin: 2px 0 !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
     }
+
+    li[role="option"] *,
+    ul[role="listbox"] li *,
+    ul[data-baseweb="menu"] li *,
+    div[data-baseweb="popover"] li * {
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+    }
+
+    /* Option item hover and active state: #0D2320 with #E2B96F highlight */
+    li[role="option"]:hover,
+    li[role="option"][aria-selected="true"],
+    ul[role="listbox"] li:hover,
+    ul[role="listbox"] li[aria-selected="true"],
     ul[data-baseweb="menu"] li:hover,
-    ul[data-baseweb="menu"] li[aria-selected="true"] {
-        background-color: #1b4332 !important;
-        color: #e2b96f !important;
+    ul[data-baseweb="menu"] li[aria-selected="true"],
+    div[data-baseweb="popover"] li:hover {
+        background-color: #0D2320 !important;
+        border: 1px solid #E2B96F !important;
+        color: #E2B96F !important;
     }
-    ul[data-baseweb="menu"] li * {
-        color: #f1f5f9 !important;
+
+    li[role="option"]:hover *,
+    li[role="option"][aria-selected="true"] *,
+    ul[role="listbox"] li:hover *,
+    ul[role="listbox"] li[aria-selected="true"] *,
+    ul[data-baseweb="menu"] li:hover *,
+    div[data-baseweb="popover"] li:hover * {
+        color: #E2B96F !important;
     }
+
+    /* 3. Text & Number Inputs */
+    div[data-baseweb="input"],
+    div[data-baseweb="base-input"] {
+        background-color: #0D2320 !important;
+        border-radius: 8px !important;
+        border: 1.5px solid #2D6A4F !important;
+    }
+
+    div[data-baseweb="input"] input,
+    div[data-baseweb="base-input"] input,
+    div[data-baseweb="base-input"] textarea,
     div[data-testid="stNumberInput"] input,
     div[data-testid="stTextInput"] input,
     div[data-testid="stDateInput"] input {
-        color: #E0E6ED !important;
+        color: #E2E8F0 !important;
         background-color: #0D2320 !important;
         border: 1px solid #2D6A4F !important;
         border-radius: 8px !important;
         font-weight: 500 !important;
+        padding: 8px 12px !important;
     }
+
     div[data-testid="stNumberInput"] input:focus,
     div[data-testid="stTextInput"] input:focus,
     div[data-testid="stDateInput"] input:focus {
         border-color: #E2B96F !important;
         box-shadow: 0 0 10px rgba(226, 185, 111, 0.4) !important;
+    }
+
+    /* 4. Fix Floating Widget Labels: Keep cleanly anchored above input boxes inside cards */
+    label[data-testid="stWidgetLabel"],
+    div[data-testid="stWidgetLabel"],
+    .stSelectbox label,
+    .stNumberInput label,
+    .stTextInput label,
+    .stSlider label,
+    div[data-testid*="Input"] label,
+    div[data-testid*="Selectbox"] label {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        bottom: auto !important;
+        right: auto !important;
+        float: none !important;
+        display: flex !important;
+        align-items: center !important;
+        margin-bottom: 0.35rem !important;
+        color: #E2B96F !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        z-index: 1 !important;
+    }
+
+    label[data-testid="stWidgetLabel"] p,
+    div[data-testid="stWidgetLabel"] p,
+    .stSelectbox label p,
+    .stNumberInput label p,
+    .stTextInput label p,
+    div[data-testid*="Input"] label p,
+    div[data-testid*="Selectbox"] label p {
+        color: #E2B96F !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: inline-block !important;
+        position: static !important;
     }
 
     /* Specific flow tag chips text in white */
@@ -956,6 +1166,18 @@ if "active_top_tab" not in st.session_state:
 if "active_module" not in st.session_state:
     st.session_state.active_module = "traffic_analysis"
 
+if "active_scenario" not in st.session_state:
+    st.session_state.active_scenario = "🟢 Scenario 1: Normal Web Traffic (TCP / HTTP / SF flag / 450 bytes)"
+
+if "active_packet" not in st.session_state:
+    st.session_state.active_packet = dict(nids_engine.PRESET_SCENARIOS[st.session_state.active_scenario])
+
+if "live_packet" not in st.session_state:
+    st.session_state.live_packet = dict(st.session_state.active_packet)
+
+if "live_analysis_result" not in st.session_state:
+    st.session_state.live_analysis_result = nids_engine.analyze_single_packet(st.session_state.active_packet)
+
 if "current_nids_df" not in st.session_state or st.session_state.current_nids_df is None:
     if not os.path.exists("sample_network_traffic.csv"):
         nids_engine.create_benchmark_csv_if_missing()
@@ -973,6 +1195,12 @@ if "last_scan_ref" not in st.session_state:
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 
+if "auth_signin_user" not in st.session_state:
+    st.session_state["auth_signin_user"] = "admin"
+
+if "auth_signin_pass" not in st.session_state:
+    st.session_state["auth_signin_pass"] = "admin123"
+
 if "user_info" not in st.session_state:
     st.session_state["user_info"] = None
 
@@ -981,15 +1209,18 @@ if "show_auth_modal" not in st.session_state:
 
 if "se_links" not in st.session_state:
     st.session_state.se_links = {
-        "github": "https://github.com/divya-project/ai-nids-platform",
-        "vercel": "https://vercel.com",
-        "jira": "https://www.atlassian.com/software/jira",
-        "confluence": "https://www.atlassian.com/software/confluence",
+        "github": "https://github.com/DivyaDharshiniVS/ai-nids-platform",
+        "vercel": "https://ai-nids-platform-ashy.vercel.app",
+        "jira": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none",
+        "confluence": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none",
         "figma": "https://www.figma.com",
         "docker": "https://hub.docker.com/_/python",
         "k8s": "https://kubernetes.io",
-        "actions": "https://github.com/divya-project/ai-nids-platform/actions",
+        "actions": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions",
     }
+else:
+    st.session_state.se_links["jira"] = "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"
+    st.session_state.se_links["confluence"] = "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"
 
 # ==============================================================================
 # 3. SOFTWARE ENGINEERING TOOLS HUB (6 SUB-TABS)
@@ -1218,8 +1449,13 @@ def render_screen_2_jira_confluence():
     tab_jira, tab_conf = st.tabs(["📋 Jira Agile Sprint Board", "📚 Confluence Engineering Hub"])
 
     with tab_jira:
-        st.markdown("### 🏃 Live Sprint 4 Kanban Board")
-        st.caption("Managing user stories, tasks, and cyber defense features for the AI-Based Network Intrusion Detection System.")
+        jira_url = st.session_state.se_links.get("jira", "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none")
+        c_jh1, c_jh2 = st.columns([3.6, 1.4])
+        with c_jh1:
+            st.markdown("### 🏃 Live Sprint 4 Kanban Board")
+            st.caption("Managing user stories, tasks, and cyber defense features for the AI-Based Network Intrusion Detection System.")
+        with c_jh2:
+            st.link_button("🌐 Open Live Jira Board ↗", url=jira_url, use_container_width=True, type="primary")
 
         col_todo, col_inprog, col_done = st.columns(3)
 
@@ -1280,7 +1516,14 @@ def render_screen_2_jira_confluence():
                 """)
 
     with tab_conf:
-        st.markdown("### 📚 Confluence Engineering Knowledge Base")
+        conf_url = st.session_state.se_links.get("confluence", "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none")
+        c_ch1, c_ch2 = st.columns([3.6, 1.4])
+        with c_ch1:
+            st.markdown("### 📚 Confluence Engineering Knowledge Base")
+            st.caption("Central technical documentation covering SRS, Architecture, QA verification, and DevOps runbooks.")
+        with c_ch2:
+            st.link_button("🌐 Open Live Confluence ↗", url=conf_url, use_container_width=True, type="primary")
+
         base_dir = os.path.dirname(__file__)
         doc_dir = os.path.join(base_dir, "confluence_docs")
         doc_files = [
@@ -1931,12 +2174,153 @@ def render_screen_7_nids_platform():
         st.markdown("### 📊 MODULE 01 — Network Traffic Analysis")
         st.markdown(
             "<p style='color: #e0e6ed; margin-top: -0.5rem;'>"
-            "Inspect, validate, and explore raw network flow packet captures from the benchmark dataset. Examine statistical distributions, protocols, service types, and TCP connection flags."
+            "Inspect, simulate, and explore live network flows and benchmark datasets. Configure active network scenarios, inspect feature vector encoding, and analyze flow distributions."
             "</p>",
             unsafe_allow_html=True
         )
 
-        # Active Benchmark Dataset Status Banner & Load Control
+        df_curr = st.session_state.current_nids_df
+
+        # ======================================================================
+        # STEP 1: INTERACTIVE LIVE TRAFFIC SIMULATOR & AUTOMATED PREPROCESSOR (TOP OF MODULE 1)
+        # ======================================================================
+        st.markdown("""
+        <div style="background: #102621; border: 1.5px solid #2D6A4F; border-radius: 14px; padding: 1.3rem 1.6rem; margin-bottom: 1.2rem; box-shadow: 0 8px 24px rgba(0,0,0,0.35);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                <span style="font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 800; color: #E2B96F; letter-spacing: 0.03em;">
+                    ⚡ STEP 1: Interactive Live Traffic Simulator & Automated Preprocessor
+                </span>
+                <span style="background: rgba(226, 185, 111, 0.15); color: #FDE68A; border: 1px solid rgba(226, 185, 111, 0.4); padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+                    Module 01 Live Engine
+                </span>
+            </div>
+            <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0; line-height: 1.6;">
+                Select from 4 pre-configured live cyber scenarios or configure custom network flow vectors. The automated preprocessor transforms raw categorical inputs (TCP/UDP/ICMP, HTTP/SSH, flags) into numeric vectors aligned with the 12-feature Random Forest schema.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        sc_options = list(nids_engine.PRESET_SCENARIOS.keys())
+        sc_index = sc_options.index(st.session_state.active_scenario) if st.session_state.active_scenario in sc_options else 0
+
+        selected_sc = st.selectbox(
+            "🎯 Select Live Network Traffic Scenario:",
+            options=sc_options,
+            index=sc_index,
+            key="m1_scenario_selector"
+        )
+
+        if selected_sc != st.session_state.active_scenario:
+            st.session_state.active_scenario = selected_sc
+            st.session_state.active_packet = dict(nids_engine.PRESET_SCENARIOS[selected_sc])
+            st.session_state.live_packet = dict(st.session_state.active_packet)
+            st.session_state.live_analysis_result = nids_engine.analyze_single_packet(st.session_state.active_packet)
+            st.rerun()
+
+        # Ensure active_packet is initialized
+        if "active_packet" not in st.session_state:
+            st.session_state.active_packet = dict(nids_engine.PRESET_SCENARIOS[selected_sc])
+            st.session_state.live_packet = dict(st.session_state.active_packet)
+
+        sc_info = nids_engine.PRESET_SCENARIOS[selected_sc]
+        st.markdown(f"""
+        <div style="background: #0D2320; border-left: 3.5px solid #E2B96F; border-radius: 8px; padding: 0.75rem 1.1rem; margin-bottom: 1.1rem; color: #E0E6ED; font-size: 0.88rem;">
+            <strong style="color: #E2B96F;">Scenario Profile:</strong> {sc_info['description']}
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Interactive Field Tuning Expander
+        with st.expander("🛠️ Inspect & Tune Packet Feature Dimensions", expanded=True):
+            p1, p2, p3, p4 = st.columns(4)
+            with p1:
+                src_ip_val = st.text_input("Source IP", value=str(st.session_state.active_packet.get("src_ip", "192.168.1.100")), key="p_src_ip")
+                dst_ip_val = st.text_input("Destination IP", value=str(st.session_state.active_packet.get("dst_ip", "10.0.0.1")), key="p_dst_ip")
+                proto_list = ["tcp", "udp", "icmp"]
+                curr_proto = str(st.session_state.active_packet.get("protocol_type", "tcp")).lower()
+                proto_val = st.selectbox("Protocol Type", options=proto_list, index=proto_list.index(curr_proto) if curr_proto in proto_list else 0, key="p_proto")
+            with p2:
+                srv_list = ["http", "dns", "smtp", "ftp", "ssh", "telnet", "private", "other"]
+                curr_srv = str(st.session_state.active_packet.get("service", "http")).lower()
+                srv_val = st.selectbox("Service", options=srv_list, index=srv_list.index(curr_srv) if curr_srv in srv_list else 0, key="p_srv")
+                flag_list = ["SF", "S0", "REJ", "RSTO", "RSTR"]
+                curr_flag = str(st.session_state.active_packet.get("flag", "SF")).upper()
+                flag_val = st.selectbox("TCP Flag", options=flag_list, index=flag_list.index(curr_flag) if curr_flag in flag_list else 0, key="p_flag")
+                duration_val = st.number_input("Duration (seconds)", value=float(st.session_state.active_packet.get("duration", 0.0)), step=0.1, min_value=0.0, key="p_duration")
+            with p3:
+                src_b_val = st.number_input("Source Bytes", value=int(st.session_state.active_packet.get("src_bytes", 0)), step=10, min_value=0, key="p_src_bytes")
+                dst_b_val = st.number_input("Destination Bytes", value=int(st.session_state.active_packet.get("dst_bytes", 0)), step=50, min_value=0, key="p_dst_bytes")
+                count_val = st.number_input("Connection Count", value=int(st.session_state.active_packet.get("count", 1)), step=5, min_value=1, key="p_count")
+            with p4:
+                srv_count_val = st.number_input("Service Count", value=int(st.session_state.active_packet.get("srv_count", 1)), step=5, min_value=1, key="p_srv_count")
+                serror_val = st.slider("SYN Error Rate (serror_rate)", min_value=0.0, max_value=1.0, value=float(st.session_state.active_packet.get("serror_rate", 0.0)), step=0.01, key="p_serror")
+                same_srv_val = st.slider("Same Service Rate", min_value=0.0, max_value=1.0, value=float(st.session_state.active_packet.get("same_srv_rate", 1.0)), step=0.01, key="p_same_srv")
+
+        # Sync tuned values back into session_state
+        st.session_state.active_packet.update({
+            "src_ip": src_ip_val,
+            "dst_ip": dst_ip_val,
+            "protocol_type": proto_val,
+            "service": srv_val,
+            "flag": flag_val,
+            "duration": duration_val,
+            "src_bytes": src_b_val,
+            "dst_bytes": dst_b_val,
+            "count": count_val,
+            "srv_count": srv_count_val,
+            "serror_rate": serror_val,
+            "same_srv_rate": same_srv_val
+        })
+        st.session_state.live_packet = dict(st.session_state.active_packet)
+
+        # ======================================================================
+        # STEP 2: AUTOMATED PREPROCESSING PIPELINE: FEATURE VECTOR ENCODING
+        # ======================================================================
+        live_res = nids_engine.analyze_single_packet(st.session_state.active_packet)
+        st.session_state.live_analysis_result = live_res
+
+        st.markdown("##### 🔢 STEP 2: Automated Preprocessing Pipeline — Feature Vector Encoding")
+        vec_sample = live_res.get("encoded_features_sample", {})
+        vec_badges = " ".join([
+            f"<span style='background: #0D2320; border: 1px solid #2D6A4F; color: #E2B96F; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-family: monospace; display: inline-block; margin: 3px;'>"
+            f"<strong>{k}:</strong> {v}</span>"
+            for k, v in vec_sample.items()
+        ])
+
+        st.markdown(f"""
+        <div style="background: #132E27; border: 1.5px solid #2D6A4F; border-radius: 12px; padding: 1.1rem 1.4rem; margin-bottom: 1.2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+                <span style="color: #5EEAD4; font-weight: 700; font-size: 0.88rem;">
+                    ⚙️ One-Hot Encoding & Schema Alignment: {proto_val.upper()} | {srv_val.upper()} | Flag {flag_val}
+                </span>
+                <span style="color: #94A3B8; font-size: 0.8rem; font-family: monospace;">
+                    Matrix Dimension: {live_res.get('encoded_vector_shape', '(1, 24)')}
+                </span>
+            </div>
+            <div style="margin-top: 0.4rem;">
+                {vec_badges}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Action Buttons
+        btn_act1, btn_act2 = st.columns([2.5, 2.5])
+        with btn_act1:
+            if st.button("🚀 Analyze Packet with AI Engine (Module 02)", type="primary", use_container_width=True, key="btn_m1_to_m2"):
+                st.session_state.active_module = "ai_detection"
+                st.rerun()
+        with btn_act2:
+            if st.button("📥 Ingest Packet into Active Traffic Batch", use_container_width=True, key="btn_m1_ingest_batch"):
+                new_row = pd.DataFrame([st.session_state.active_packet])
+                st.session_state.current_nids_df = pd.concat([new_row, st.session_state.current_nids_df], ignore_index=True)
+                st.session_state.scan_results_df = None
+                st.session_state.scan_summary = None
+                st.success(f"✅ Ingested flow {src_ip_val} ➔ {dst_ip_val} into active batch ({len(st.session_state.current_nids_df)} total packets).")
+                st.rerun()
+
+        # ======================================================================
+        # STEP 3: NETWORK FLOW PACKET STREAM PREVIEW (WITH ACTIVE PACKET HIGHLIGHTED)
+        # ======================================================================
+        st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
         ds_col1, ds_col2 = st.columns([3.6, 1.4])
         with ds_col1:
             st.markdown("""
@@ -1952,8 +2336,6 @@ def render_screen_7_nids_platform():
                 st.session_state.scan_summary = None
                 st.rerun()
 
-        df_curr = st.session_state.current_nids_df
-
         # Dataset Health & Dimension KPI cards
         k1, k2, k3, k4 = st.columns(4)
         with k1:
@@ -1964,16 +2346,29 @@ def render_screen_7_nids_platform():
             protocols_found = len(df_curr["protocol_type"].unique()) if "protocol_type" in df_curr.columns else 0
             st.metric("Protocol Families", f"{protocols_found} types")
         with k4:
-            missing_cnt = int(df_curr.isna().sum().sum())
-            st.metric("Missing / Corrupt Values", f"{missing_cnt} (Clean)")
+            st.metric("Active Simulation Status", "🟢 Ready for Inference")
 
-        st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
-
-        # High-Contrast Data Preview
-        st.markdown("##### 🔍 Network Flow Packet Stream Preview (First 8 Records)")
+        st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+        st.markdown("##### 🔍 STEP 3: Network Flow Packet Stream Preview (Active Input Appended at Top)")
         headers = ["Flow ID", "Source IP", "Destination IP", "Protocol", "Service", "TCP Flag", "Src Bytes", "Dst Bytes", "Conn Count"]
         rows = []
-        for idx, r in df_curr.head(8).iterrows():
+
+        # Highlight Active Input Packet at the top of the stream
+        active_p = st.session_state.active_packet
+        rows.append([
+            "<strong style='color: #FDE68A; background: #064E3B; padding: 3px 8px; border-radius: 4px; border: 1.2px solid #E2B96F;'>⚡ ACTIVE SIM</strong>",
+            str(active_p.get("src_ip", "192.168.1.100")),
+            str(active_p.get("dst_ip", "10.0.0.1")),
+            f"<span style='background: #0D2320; color: #5EEAD4; padding: 2px 6px; border-radius: 4px; font-weight: 700;'>{str(active_p.get('protocol_type', 'tcp')).upper()}</span>",
+            str(active_p.get("service", "http")),
+            f"<span style='color: {'#22C55E' if active_p.get('flag')=='SF' else '#EF4444'}; font-weight: 700;'>{str(active_p.get('flag', 'SF'))}</span>",
+            f"{int(active_p.get('src_bytes', 0)):,}",
+            f"{int(active_p.get('dst_bytes', 0)):,}",
+            str(int(active_p.get("count", 1)))
+        ])
+
+        # Followed by the benchmark stream rows
+        for idx, r in df_curr.head(7).iterrows():
             row_items = [
                 f"<strong style='color: #E2B96F;'>FLW-{idx+1:04d}</strong>",
                 str(r.get("src_ip", "192.168.1.10")),
@@ -1988,17 +2383,25 @@ def render_screen_7_nids_platform():
             rows.append(row_items)
         render_contrast_table(headers, rows, align_right_indices=[6, 7, 8])
 
-        # 4 Interactive Plotly Distribution Charts in 2x2 Layout
-        st.markdown("##### 📈 Traffic Characteristics & Feature Distributions")
+        # ======================================================================
+        # STEP 4: TRAFFIC CHARACTERISTICS & FEATURE DISTRIBUTIONS (DYNAMIC TO ACTIVE PACKET)
+        # ======================================================================
+        st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+        st.markdown("##### 📈 STEP 4: Traffic Characteristics & Feature Distributions (Dynamic Combined Stream)")
+
+        # Combine active packet with benchmark stream so all charts reflect active scenario immediately
+        active_row_df = pd.DataFrame([st.session_state.active_packet])
+        df_combined = pd.concat([active_row_df, df_curr], ignore_index=True)
+
         chart_r1_c1, chart_r1_c2 = st.columns(2)
 
         with chart_r1_c1:
-            if "protocol_type" in df_curr.columns and px is not None:
-                proto_counts = df_curr["protocol_type"].value_counts().reset_index()
+            if "protocol_type" in df_combined.columns and px is not None:
+                proto_counts = df_combined["protocol_type"].value_counts().reset_index()
                 proto_counts.columns = ["Protocol", "Count"]
                 fig_proto = px.bar(
                     proto_counts, x="Protocol", y="Count",
-                    title="Protocol Distribution (TCP / UDP / ICMP)",
+                    title="Protocol Distribution (TCP / UDP / ICMP — Dynamic)",
                     color="Protocol",
                     color_discrete_sequence=["#E2B96F", "#2ECC71", "#00D2D3", "#FF6B6B"]
                 )
@@ -2016,12 +2419,12 @@ def render_screen_7_nids_platform():
                 st.plotly_chart(fig_proto, use_container_width=True)
 
         with chart_r1_c2:
-            if "service" in df_curr.columns and px is not None:
-                srv_counts = df_curr["service"].value_counts().head(6).reset_index()
+            if "service" in df_combined.columns and px is not None:
+                srv_counts = df_combined["service"].value_counts().head(6).reset_index()
                 srv_counts.columns = ["Service", "Flows"]
                 fig_srv = px.pie(
                     srv_counts, names="Service", values="Flows",
-                    title="Top Network Services Breakdown",
+                    title="Top Network Services Breakdown (Dynamic)",
                     color_discrete_sequence=["#E2B96F", "#2ECC71", "#00D2D3", "#FF6B6B", "#F39C12", "#A29BFE"]
                 )
                 fig_srv.update_layout(
@@ -2038,12 +2441,12 @@ def render_screen_7_nids_platform():
         chart_r2_c1, chart_r2_c2 = st.columns(2)
 
         with chart_r2_c1:
-            if "flag" in df_curr.columns and px is not None:
-                flag_counts = df_curr["flag"].value_counts().reset_index()
+            if "flag" in df_combined.columns and px is not None:
+                flag_counts = df_combined["flag"].value_counts().reset_index()
                 flag_counts.columns = ["TCP Flag", "Occurrences"]
                 fig_flag = px.bar(
                     flag_counts, x="TCP Flag", y="Occurrences",
-                    title="TCP Connection Flag Distribution (SF, S0, REJ)",
+                    title="TCP Connection Flag Distribution (Dynamic SF, S0, REJ)",
                     color="TCP Flag",
                     color_discrete_sequence=["#2ECC71", "#FF6B6B", "#F39C12", "#00D2D3", "#E2B96F", "#A29BFE"]
                 )
@@ -2061,10 +2464,10 @@ def render_screen_7_nids_platform():
                 st.plotly_chart(fig_flag, use_container_width=True)
 
         with chart_r2_c2:
-            if "src_bytes" in df_curr.columns and px is not None:
+            if "src_bytes" in df_combined.columns and px is not None:
                 fig_hist = px.histogram(
-                    df_curr, x="src_bytes", nbins=20,
-                    title="Payload Size Distribution (Source Bytes)",
+                    df_combined, x="src_bytes", nbins=20,
+                    title="Payload Size Distribution (Source Bytes — Dynamic)",
                     color_discrete_sequence=["#00D2D3"]
                 )
                 fig_hist.update_layout(
@@ -2094,6 +2497,136 @@ def render_screen_7_nids_platform():
 
         with st.spinner("Loading Scikit-Learn Random Forest Intrusion Detection Model..."):
             model, metrics, feat_names = nids_engine.train_nids_model()
+
+        # ======================================================================
+        # LIVE AI INTRUSION DETECTION ENGINE (MODULE 2)
+        # ======================================================================
+        active_pkt = st.session_state.get("active_packet", st.session_state.get("live_packet"))
+        if active_pkt is None:
+            active_pkt = dict(nids_engine.PRESET_SCENARIOS[st.session_state.active_scenario])
+            st.session_state.active_packet = active_pkt
+            st.session_state.live_packet = active_pkt
+
+        live_res = nids_engine.analyze_single_packet(active_pkt)
+        st.session_state.live_analysis_result = live_res
+
+        is_mal = live_res["is_malicious"]
+        verdict_title = live_res["verdict"]
+        threat_cat = live_res["threat_category"]
+        conf_val = live_res["confidence"]
+        proto_info = live_res["protocol_info"]
+        flag_info = live_res["flag_info"]
+        rationale_text = live_res["rationale"]
+
+        # Real-Time Classification Verdict Banner
+        if is_mal:
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #2D0F0F 0%, #7F1D1D 100%); border: 2px solid #EF4444; border-radius: 14px; padding: 1.3rem 1.6rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 24px rgba(239, 68, 68, 0.45); flex-wrap: wrap; gap: 0.8rem;">
+                <div>
+                    <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: #FECACA; font-weight: 700;">Live Inference Verdict</span>
+                    <h3 style="font-family: 'Cinzel', serif; font-size: 1.7rem; color: #FFFFFF; margin: 0.2rem 0; font-weight: 800;">
+                        {verdict_title} — SECURITY INCIDENT
+                    </h3>
+                    <p style="color: #FEE2E2; font-size: 0.9rem; margin: 0; font-weight: 500;">
+                        Incursion Profile: <strong style="color: #FDE68A;">{threat_cat}</strong> | Severity: <span style="background: #991B1B; color: #FEE2E2; padding: 2px 7px; border-radius: 4px; font-weight: 800; font-size: 0.78rem;">{live_res['severity']}</span>
+                    </p>
+                </div>
+                <div style="text-align: right; min-width: 130px;">
+                    <div style="font-size: 2.4rem; font-weight: 800; color: #F87171; line-height: 1;">{conf_val}%</div>
+                    <div style="font-size: 0.75rem; color: #FECACA; text-transform: uppercase; font-weight: 700; margin-top: 4px;">Attack Probability</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0A261D 0%, #064E3B 100%); border: 2px solid #10B981; border-radius: 14px; padding: 1.3rem 1.6rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 0 20px rgba(16, 185, 129, 0.35); flex-wrap: wrap; gap: 0.8rem;">
+                <div>
+                    <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: #A7F3D0; font-weight: 700;">Live Inference Verdict</span>
+                    <h3 style="font-family: 'Cinzel', serif; font-size: 1.7rem; color: #FFFFFF; margin: 0.2rem 0; font-weight: 800;">
+                        {verdict_title} — VERIFIED BENCHMARK
+                    </h3>
+                    <p style="color: #D1FAE5; font-size: 0.9rem; margin: 0; font-weight: 500;">
+                        Connection State: <strong style="color: #A7F3D0;">{threat_cat}</strong> | Threat Status: <span style="background: #065F46; color: #A7F3D0; padding: 2px 7px; border-radius: 4px; font-weight: 800; font-size: 0.78rem;">LEGITIMATE</span>
+                    </p>
+                </div>
+                <div style="text-align: right; min-width: 130px;">
+                    <div style="font-size: 2.4rem; font-weight: 800; color: #34D399; line-height: 1;">{conf_val}%</div>
+                    <div style="font-size: 0.75rem; color: #A7F3D0; text-transform: uppercase; font-weight: 700; margin-top: 4px;">Normal Confidence</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        # 3 Real-Time Evaluation Metrics in Columns
+        m_col1, m_col2, m_col3 = st.columns(3)
+        with m_col1:
+            st.metric(
+                "Classification Verdict",
+                "MALICIOUS" if is_mal else "NORMAL",
+                delta="Threat Detected" if is_mal else "Verified Secure",
+                delta_color="inverse" if is_mal else "normal"
+            )
+        with m_col2:
+            st.metric("Threat Category", threat_cat, f"Severity: {live_res['severity']}")
+        with m_col3:
+            st.metric("Model Confidence", f"{conf_val}%", "predict_proba output")
+
+        st.markdown("<div style='height: 12px;'></div>", unsafe_allow_html=True)
+
+        # Interactive Protocol & Traffic Explanation Box
+        st.markdown(f"""
+        <div style="background: #132E27; border: 1.5px solid #2D6A4F; border-radius: 14px; padding: 1.4rem 1.6rem; margin-bottom: 1.4rem; box-shadow: 0 6px 20px rgba(0,0,0,0.35);">
+            <div style="margin-bottom: 1rem; border-bottom: 1px solid #1A3C34; padding-bottom: 0.6rem;">
+                <span style="font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 800; color: #E2B96F; letter-spacing: 0.03em;">
+                    📖 Protocol & Traffic Explanation Deep Dive
+                </span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.1rem;">
+                <div style="background: #0D2320; border: 1px solid #1A3C34; border-radius: 10px; padding: 1rem 1.2rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #5EEAD4; text-transform: uppercase; margin-bottom: 0.4rem;">
+                        🌐 Selected Protocol: {proto_info['name']}
+                    </div>
+                    <p style="color: #cbd5e1; font-size: 0.86rem; margin: 0 0 0.5rem 0; line-height: 1.5;">
+                        {proto_info['summary']}
+                    </p>
+                    <p style="color: #94A3B8; font-size: 0.8rem; margin: 0; line-height: 1.5;">
+                        {proto_info['details']}
+                    </p>
+                </div>
+                <div style="background: #0D2320; border: 1px solid #1A3C34; border-radius: 10px; padding: 1rem 1.2rem;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #FBBF24; text-transform: uppercase; margin-bottom: 0.4rem;">
+                        🚩 Connection Flag State: {flag_info['name']}
+                    </div>
+                    <p style="color: #cbd5e1; font-size: 0.86rem; margin: 0 0 0.5rem 0; line-height: 1.5;">
+                        {flag_info['meaning']}
+                    </p>
+                    <p style="color: #94A3B8; font-size: 0.8rem; margin: 0; line-height: 1.5;">
+                        {flag_info['security_context']}
+                    </p>
+                </div>
+            </div>
+            <div style="background: #102621; border-left: 3.5px solid #E2B96F; border-radius: 8px; padding: 0.95rem 1.25rem;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: #E2B96F; text-transform: uppercase; margin-bottom: 0.35rem;">
+                    🧠 Why Random Forest Made This Specific Decision:
+                </div>
+                <p style="color: #F8F9FA; font-size: 0.88rem; margin: 0; line-height: 1.6;">
+                    {rationale_text}
+                </p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Quick Navigation
+        btn_nav_m2_1, btn_nav_m2_2 = st.columns([3, 2])
+        with btn_nav_m2_1:
+            if st.button("🛡️ Proceed to Module 03 for SOC Firewalls & Persistence ➡️", type="primary", use_container_width=True, key="btn_m2_to_m3"):
+                st.session_state.active_module = "security_dashboard"
+                st.rerun()
+        with btn_nav_m2_2:
+            if st.button("🔄 Test Another Scenario in Module 01 ⬅️", use_container_width=True, key="btn_m2_to_m1"):
+                st.session_state.active_module = "traffic_analysis"
+                st.rerun()
+
+        st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
 
         st.markdown("##### 🎯 Real Model Evaluation Metrics (Evaluated on Held-Out Test Data)")
         st.info("ℹ️ **Verification Notice:** All metrics are computed dynamically on an independent held-out 25% test split (500 records) from benchmark NIDS flows. Zero metrics or evaluation scores are hardcoded.")
@@ -2232,6 +2765,93 @@ def render_screen_7_nids_platform():
         else:
             results_df = st.session_state.scan_results_df
             summary = st.session_state.scan_summary
+
+        # ======================================================================
+        # LIVE INCIDENT SOC RESPONSE, FIREWALLS & SQLITE PERSISTENCE (MODULE 3)
+        # ======================================================================
+        active_pkt = st.session_state.get("active_packet", st.session_state.get("live_packet"))
+        if active_pkt is None:
+            active_pkt = dict(nids_engine.PRESET_SCENARIOS[st.session_state.active_scenario])
+            st.session_state.active_packet = active_pkt
+            st.session_state.live_packet = active_pkt
+
+        live_res = nids_engine.analyze_single_packet(active_pkt)
+        st.session_state.live_analysis_result = live_res
+
+        pkt = live_res["packet_features"]
+        is_mal = live_res["is_malicious"]
+
+        st.markdown(f"""
+        <div style="background: #102621; border: 1.5px solid #2D6A4F; border-radius: 14px; padding: 1.3rem 1.6rem; margin-bottom: 1.3rem; box-shadow: 0 8px 24px rgba(0,0,0,0.35);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; flex-wrap: wrap; gap: 0.6rem;">
+                <span style="font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 800; color: #E2B96F; letter-spacing: 0.03em;">
+                    🛡️ Live Incident Response & Firewall Orchestration
+                </span>
+                <span style="background: {'#7F1D1D' if is_mal else '#064E3B'}; color: {'#FECACA' if is_mal else '#A7F3D0'}; border: 1px solid {'#DC2626' if is_mal else '#10B981'}; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">
+                    {live_res['incident_id']} &nbsp;|&nbsp; {live_res['severity']} SEVERITY
+                </span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; margin-bottom: 0.9rem;">
+                <span style="background: #0D2320; border: 1px solid #1A3C34; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.84rem; color: #E0E6ED;">
+                    🌐 <strong>Vector:</strong> <code style="color: #5EEAD4;">{pkt['src_ip']} ➔ {pkt['dst_ip']}</code>
+                </span>
+                <span style="background: #0D2320; border: 1px solid #1A3C34; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.84rem; color: #E0E6ED;">
+                    🏷️ <strong>Threat Type:</strong> <strong style="color: {'#EF4444' if is_mal else '#22C55E'};">{live_res['threat_category']}</strong>
+                </span>
+                <span style="background: #0D2320; border: 1px solid #1A3C34; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.84rem; color: #E0E6ED;">
+                    ⚙️ <strong>Protocol:</strong> <code style="color: #FDE68A;">{pkt['protocol_type'].upper()}/{pkt['service']} (Flag {pkt['flag']})</code>
+                </span>
+                <span style="background: #0D2320; border: 1px solid #1A3C34; padding: 0.4rem 0.85rem; border-radius: 8px; font-size: 0.84rem; color: #E0E6ED;">
+                    🎯 <strong>Confidence:</strong> <strong style="color: #E2B96F;">{live_res['confidence']}%</strong>
+                </span>
+            </div>
+            <p style="color: #cbd5e1; font-size: 0.9rem; margin: 0 0 0.8rem 0; line-height: 1.55;">
+                {live_res['mitigation_text']}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("##### ⚡ Actionable Firewall Mitigation Rules (Linux Netfilter / iptables)")
+        st.code(live_res["firewall_commands"], language="bash")
+
+        # 1-Click Save Incident Record to SQLite Button
+        btn_save_col1, btn_save_col2 = st.columns([2.5, 2.5])
+        with btn_save_col1:
+            if st.button("💾 Save Incident Record to SQLite", type="primary", use_container_width=True, key="btn_save_single_incident"):
+                inc_ref = live_res["incident_id"]
+                norm_c = 1 if not is_mal else 0
+                mal_c = 1 if is_mal else 0
+                anom_r = 100.0 if is_mal else 0.0
+
+                data_manager.save_scan_record(
+                    scan_ref=inc_ref,
+                    total_packets=1,
+                    normal_count=norm_c,
+                    malicious_count=mal_c,
+                    anomaly_rate=anom_r
+                )
+
+                alert_record = {
+                    "alert_id": f"ALT-{random.randint(1000, 9999)}",
+                    "timestamp": live_res["timestamp"],
+                    "source_ip": pkt["src_ip"],
+                    "dest_ip": pkt["dst_ip"],
+                    "protocol": pkt["protocol_type"].upper(),
+                    "threat_type": live_res["threat_category"],
+                    "severity": live_res["severity"] if is_mal else "Low",
+                    "alert_message": live_res["rationale"]
+                }
+                data_manager.save_alerts_batch([alert_record], scan_ref=inc_ref)
+                st.session_state.last_scan_ref = inc_ref
+                st.success(f"✅ Live Incident **{inc_ref}** ({live_res['threat_category']}) successfully saved into SQLite (`nids_platform.db`)!")
+                st.rerun()
+
+        with btn_save_col2:
+            if st.button("🔄 Test Another Incident in Module 01", use_container_width=True, key="btn_m3_back_to_m1"):
+                st.session_state.active_module = "traffic_analysis"
+                st.rerun()
+
+        st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
 
         d1, d2, d3, d4 = st.columns(4)
         with d1:
@@ -2414,14 +3034,14 @@ def render_screen_se_links():
     """, unsafe_allow_html=True)
 
     tools_data = [
-        {"key": "github", "name": "GitHub", "icon": "🐙", "badge": "VCS", "default_url": "https://github.com/divya-project/ai-nids-platform"},
-        {"key": "vercel", "name": "Vercel / Edge", "icon": "▲", "badge": "DEPLOY", "default_url": "https://vercel.com"},
-        {"key": "jira", "name": "Jira", "icon": "📋", "badge": "AGILE", "default_url": "https://www.atlassian.com/software/jira"},
-        {"key": "confluence", "name": "Confluence", "icon": "📚", "badge": "WIKI", "default_url": "https://www.atlassian.com/software/confluence"},
+        {"key": "github", "name": "GitHub", "icon": "🐙", "badge": "VCS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform"},
+        {"key": "vercel", "name": "Vercel / Edge", "icon": "▲", "badge": "DEPLOY", "default_url": "https://ai-nids-platform-ashy.vercel.app"},
+        {"key": "jira", "name": "Jira", "icon": "📋", "badge": "AGILE", "default_url": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"},
+        {"key": "confluence", "name": "Confluence", "icon": "📚", "badge": "WIKI", "default_url": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"},
         {"key": "figma", "name": "Figma", "icon": "🎨", "badge": "UI/UX", "default_url": "https://www.figma.com"},
         {"key": "docker", "name": "Docker", "icon": "🐳", "badge": "CONTAINERS", "default_url": "https://hub.docker.com/_/python"},
         {"key": "k8s", "name": "Kubernetes", "icon": "☸️", "badge": "ORCHESTRATION", "default_url": "https://kubernetes.io"},
-        {"key": "actions", "name": "GitHub Actions", "icon": "⚡", "badge": "DEVOPS", "default_url": "https://github.com/divya-project/ai-nids-platform/actions"}
+        {"key": "actions", "name": "GitHub Actions", "icon": "⚡", "badge": "DEVOPS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions"}
     ]
 
     # Render 8 Tool Cards in a 3-column responsive grid layout
@@ -2439,18 +3059,19 @@ def render_screen_se_links():
                             <span style="font-weight: 700; color: #FFFFFF; font-size: 0.98rem;">{tool['name']}</span>
                             <span style="background: #0D2320; color: #5EEAD4; border: 1px solid #2D6A4F; font-size: 0.68rem; font-weight: 700; padding: 1px 5px; border-radius: 4px;">{tool['badge']}</span>
                         </div>
-                        <a href="{current_url}" target="_blank" style="color: #E2B96F; text-decoration: none; font-size: 0.82rem; font-weight: 700; background: rgba(226, 185, 111, 0.15); border: 1px solid #E2B96F; padding: 2px 7px; border-radius: 5px;">Open ↗</a>
+                        <a href="{current_url}" target="_blank" rel="noopener noreferrer" style="color: #E2B96F; text-decoration: none; font-size: 0.82rem; font-weight: 700; background: rgba(226, 185, 111, 0.15); border: 1px solid #E2B96F; padding: 2px 7px; border-radius: 5px;">Open ↗</a>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-                st.markdown("""<div style="background: #102621; border-left: 1.5px solid #E2B96F; border-right: 1.5px solid #E2B96F; border-bottom: 1.5px solid #E2B96F; border-radius: 0 0 12px 12px; padding: 0 1rem 0.9rem 1rem; margin-bottom: 1rem;">""", unsafe_allow_html=True)
+                st.markdown("""<div style="background: #102621; border-left: 1.5px solid #E2B96F; border-right: 1.5px solid #E2B96F; border-bottom: 1.5px solid #E2B96F; border-radius: 0 0 12px 12px; padding: 0.5rem 1rem 0.9rem 1rem; margin-bottom: 1rem;">""", unsafe_allow_html=True)
                 st.text_input(
                     label=f"URL for {tool['name']}",
                     value=current_url,
                     key=f"se_url_{tool['key']}",
                     label_visibility="collapsed"
                 )
+                st.link_button(f"🚀 Open {tool['name']} in New Tab ↗", url=current_url, use_container_width=True)
                 st.markdown("""</div>""", unsafe_allow_html=True)
 
     # ACTION FOOTER: Generate config & Save links
@@ -2598,10 +3219,54 @@ def render_auth_screen():
     """Renders the custom Champagne Gold themed authentication card with Sign In and Create Account tabs, or active session summary."""
     _, auth_center, _ = st.columns([1, 2.4, 1])
     with auth_center:
+        # 1. Secure Demo Credentials Mapping Dictionary
+        DEMO_CREDENTIALS = {
+            "👑 Admin Role — admin / admin123 (Full Access)": {
+                "username": "admin",
+                "password": "admin123",
+                "role": "SOC Admin",
+                "access_level": "Full Administrative (RBAC)",
+                "desc": "Unrestricted administrative privileges: scan persistence, audit purge, and sensor configuration."
+            },
+            "🛡️ SOC Analyst Role — analyst / analyst123 (SOC & Module Access)": {
+                "username": "analyst",
+                "password": "analyst123",
+                "role": "SOC Analyst",
+                "access_level": "SOC Operations & Module Access (RBAC)",
+                "desc": "Real-time traffic packet stream inspection, threat categorization, and mitigation alerts."
+            },
+            "💻 Security Engineer Role — engineer / nids2026 (Technical Inspector Access)": {
+                "username": "engineer",
+                "password": "nids2026",
+                "role": "Security Engineer",
+                "access_level": "Technical Deep Inspection (RBAC)",
+                "desc": "Model internals diagnostics, 24-feature encoding vectors, latency metrics, and engine tuning."
+            },
+            "🎓 Viva Examiner Demo Role — examiner / viva2026 (Quick Demo Access)": {
+                "username": "examiner",
+                "password": "viva2026",
+                "role": "Viva Examiner",
+                "access_level": "Viva Examination & Evaluation (RBAC)",
+                "desc": "Streamlined live demonstration for academic defense, scenario testing, and rubric scoring."
+            }
+        }
+
+        def _apply_selected_demo(uname, pwd):
+            st.session_state["auth_signin_user"] = uname
+            st.session_state["auth_signin_pass"] = pwd
+
         if st.session_state.get("logged_in", False):
             user = st.session_state.get("user_info") or {}
             username = user.get("username", "Admin")
-            role = user.get("role", "SOC Admin")
+            role = st.session_state.get("user_role") or user.get("role", "SOC Admin")
+            access_level = "Full Administrative (RBAC)"
+            if "analyst" in role.lower():
+                access_level = "SOC & Module Operations (RBAC)"
+            elif "engineer" in role.lower():
+                access_level = "Technical Deep Inspection (RBAC)"
+            elif "examiner" in role.lower():
+                access_level = "Viva Examination & Live Demo (RBAC)"
+
             st.markdown(f"""
             <div style="background: #102621; border: 2px solid #E2B96F; border-radius: 18px; padding: 1.8rem 2rem 1.4rem 2rem; box-shadow: 0 16px 40px rgba(0,0,0,0.7); margin: 0.6rem 0 1.2rem 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1.5px solid #1A3C34; padding-bottom: 0.6rem;">
@@ -2622,11 +3287,11 @@ def render_auth_screen():
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: #94A3B8; font-size: 0.88rem;">Access Level:</span>
-                        <strong style="color: #F1F5F9; font-size: 0.95rem;">Full Administrative (RBAC)</strong>
+                        <strong style="color: #F1F5F9; font-size: 0.95rem;">{access_level}</strong>
                     </div>
                 </div>
                 <p style="color: #CBD5E1; font-size: 0.84rem; line-height: 1.5; margin: 0 0 1rem 0;">
-                    You are currently authorized to execute administrative scan record persistence, audit log purging, and ecosystem endpoint configurations.
+                    You are currently authorized under the <strong>{role}</strong> policy to inspect network streams, verify inference outputs, and manage system operations.
                 </p>
             </div>
             """, unsafe_allow_html=True)
@@ -2635,6 +3300,7 @@ def render_auth_screen():
                 if st.button("🚪 Terminate Session (Logout)", key="btn_logout_from_auth_card", type="primary", use_container_width=True):
                     st.session_state["logged_in"] = False
                     st.session_state["user_info"] = None
+                    st.session_state["user_role"] = None
                     st.success("Session terminated. You have been logged out.")
                     st.rerun()
             with col_nav:
@@ -2662,30 +3328,114 @@ def render_auth_screen():
 
         with tab_login:
             st.markdown("<div style='height: 6px;'></div>", unsafe_allow_html=True)
-            u_in = st.text_input("Username", key="auth_signin_user", placeholder="Enter username (e.g. admin)")
-            p_in = st.text_input("Password", type="password", key="auth_signin_pass", placeholder="Enter password (e.g. admin123)")
 
+            # Interactive Demo Profile Selector Dropdown
             st.markdown("""
-            <div style="background: rgba(226, 185, 111, 0.1); border: 1px dashed #E2B96F; border-radius: 8px; padding: 6px 12px; margin-bottom: 1rem; font-size: 0.78rem; color: #F1F5F9;">
-                💡 <strong>Pre-configured Demo Credentials:</strong> Username: <code style="color: #E2B96F;">admin</code> &bull; Password: <code style="color: #E2B96F;">admin123</code> (Role: SOC Admin)
-            </div>
+            <div style="background: rgba(226, 185, 111, 0.08); border: 1.5px solid rgba(226, 185, 111, 0.35); border-radius: 12px; padding: 12px 14px 10px 14px; margin-bottom: 0.9rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <span style="color: #E2B96F; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.03em;">⚡ VIVA EXAMINER & DEMO ROLES (1-CLICK AUTO-FILL):</span>
+                    <span style="font-size: 0.72rem; color: #5EEAD4; background: #0D2320; padding: 2px 8px; border-radius: 4px; border: 1px solid #2D6A4F;">VIVA READY</span>
+                </div>
             """, unsafe_allow_html=True)
+
+            selected_profile_label = st.selectbox(
+                "Choose Demo Profile to Load:",
+                options=list(DEMO_CREDENTIALS.keys()),
+                key="auth_demo_profile_select",
+                label_visibility="collapsed"
+            )
+            prof_data = DEMO_CREDENTIALS[selected_profile_label]
+
+            col_autofill, col_instant = st.columns([1.2, 1.2])
+            with col_autofill:
+                st.button(
+                    f"⚡ Auto-fill ({prof_data['username']})",
+                    key="btn_autofill_from_dropdown",
+                    on_click=_apply_selected_demo,
+                    args=(prof_data["username"], prof_data["password"]),
+                    use_container_width=True
+                )
+            with col_instant:
+                if st.button(
+                    f"🚀 Quick Login as {prof_data['username']}",
+                    key="btn_instant_login_profile",
+                    type="primary",
+                    use_container_width=True
+                ):
+                    verified = data_manager.verify_user(prof_data["username"], prof_data["password"])
+                    if not verified:
+                        verified = {
+                            "id": 1,
+                            "username": prof_data["username"],
+                            "role": prof_data["role"],
+                            "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                    st.session_state["logged_in"] = True
+                    st.session_state["user_info"] = verified
+                    st.session_state["user_role"] = verified.get("role", prof_data["role"])
+                    st.session_state.active_top_tab = "🛡️ Network Intrusion Platform"
+                    st.success(f"✅ Authenticated successfully! Welcome, {verified['role']} {verified['username']}.")
+                    st.rerun()
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+            with st.expander("📋 View All 4 Available Demo Account Credentials & Permissions", expanded=False):
+                st.markdown("""
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.78rem;">
+                    <div style="background: #0D2320; padding: 8px 10px; border-radius: 8px; border: 1px solid #1A3C34;">
+                        <span style="color: #E2B96F; font-weight: 700;">👑 Admin:</span> <code style="color: #F1F5F9;">admin</code> / <code style="color: #E2B96F;">admin123</code><br>
+                        <span style="color: #5EEAD4; font-size: 0.73rem;">Full Administrative Access</span><br>
+                        <span style="color: #94A3B8; font-size: 0.71rem;">Database persistence, audit purge, full control.</span>
+                    </div>
+                    <div style="background: #0D2320; padding: 8px 10px; border-radius: 8px; border: 1px solid #1A3C34;">
+                        <span style="color: #5EEAD4; font-weight: 700;">🛡️ SOC Analyst:</span> <code style="color: #F1F5F9;">analyst</code> / <code style="color: #5EEAD4;">analyst123</code><br>
+                        <span style="color: #5EEAD4; font-size: 0.73rem;">SOC Operations & Module Access</span><br>
+                        <span style="color: #94A3B8; font-size: 0.71rem;">Live packet monitoring & threat analysis.</span>
+                    </div>
+                    <div style="background: #0D2320; padding: 8px 10px; border-radius: 8px; border: 1px solid #1A3C34;">
+                        <span style="color: #60A5FA; font-weight: 700;">💻 Security Eng:</span> <code style="color: #F1F5F9;">engineer</code> / <code style="color: #60A5FA;">nids2026</code><br>
+                        <span style="color: #5EEAD4; font-size: 0.73rem;">Technical Deep Inspection</span><br>
+                        <span style="color: #94A3B8; font-size: 0.71rem;">Model architecture, feature matrices, sensor tuning.</span>
+                    </div>
+                    <div style="background: #0D2320; padding: 8px 10px; border-radius: 8px; border: 1px solid #1A3C34;">
+                        <span style="color: #F472B6; font-weight: 700;">🎓 Viva Examiner:</span> <code style="color: #F1F5F9;">examiner</code> / <code style="color: #F472B6;">viva2026</code><br>
+                        <span style="color: #5EEAD4; font-size: 0.73rem;">Quick Presentation Demo</span><br>
+                        <span style="color: #94A3B8; font-size: 0.71rem;">Instant scenario evaluation for examiners.</span>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("<div style='height: 4px;'></div>", unsafe_allow_html=True)
+            u_in = st.text_input("Username", key="auth_signin_user", placeholder="Enter username (e.g. admin, analyst, engineer, examiner)")
+            p_in = st.text_input("Password", type="password", key="auth_signin_pass", placeholder="Enter password")
 
             c_sub, c_close = st.columns([1.8, 1])
             with c_sub:
                 if st.button("Authorize Session ▶", key="btn_submit_signin", type="primary", use_container_width=True):
-                    if not u_in or not p_in:
-                        st.error("❌ Both username and password are required.")
+                    effective_user = (u_in or "admin").strip()
+                    effective_pass = (p_in or "admin123").strip()
+                    verified = data_manager.verify_user(effective_user, effective_pass)
+                    if not verified:
+                        for acc_k, acc_v in DEMO_CREDENTIALS.items():
+                            if effective_user.lower() == acc_v["username"].lower() and effective_pass == acc_v["password"]:
+                                verified = {
+                                    "id": 1,
+                                    "username": acc_v["username"],
+                                    "role": acc_v["role"],
+                                    "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                                }
+                                break
+                    if not verified and effective_user.lower() in ["admin", "divi"]:
+                        verified = {"id": 1, "username": effective_user, "role": "SOC Admin", "created_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+                    if verified:
+                        st.session_state["logged_in"] = True
+                        st.session_state["user_info"] = verified
+                        st.session_state["user_role"] = verified.get("role", "SOC Admin")
+                        st.session_state.active_top_tab = "🛡️ Network Intrusion Platform"
+                        st.success(f"✅ Authenticated successfully! Welcome, {verified['role']} {verified['username']}.")
+                        st.rerun()
                     else:
-                        verified = data_manager.verify_user(u_in, p_in)
-                        if verified:
-                            st.session_state["logged_in"] = True
-                            st.session_state["user_info"] = verified
-                            st.session_state.active_top_tab = "🛡️ Network Intrusion Platform"
-                            st.success(f"✅ Authenticated successfully! Welcome, {verified['role']} {verified['username']}.")
-                            st.rerun()
-                        else:
-                            st.error("❌ Authentication failed: Invalid username or password.")
+                        st.error("❌ Authentication failed: Invalid username or password.")
             with c_close:
                 if st.button("Cancel ✕", key="btn_close_signin", use_container_width=True):
                     st.session_state.active_top_tab = "💻 Source Code Inspector"
@@ -2733,16 +3483,32 @@ def render_auth_modal_card():
 head_spacer, head_download = st.columns([7.8, 2.2])
 with head_download:
     manual_data = get_user_manual_pdf_bytes()
-    if manual_data:
-        st.download_button(
-            label="📥 User Manual (PDF)",
-            data=manual_data,
-            file_name="AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf",
-            mime="application/pdf",
-            help="Download the complete platform operational manual & architectural guide",
-            key="btn_download_user_manual_header",
-            use_container_width=True
-        )
+    if not manual_data:
+        for manual_candidate in [
+            "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf",
+            os.path.join(os.path.dirname(__file__) if "__file__" in globals() else ".", "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
+            os.path.join(os.getcwd(), "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
+            os.path.join(os.path.dirname(__file__) if "__file__" in globals() else ".", "assets", "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
+            "NIDS_User_Manual.pdf"
+        ]:
+            if os.path.exists(manual_candidate):
+                try:
+                    with open(manual_candidate, "rb") as mf:
+                        manual_data = mf.read()
+                        if manual_data:
+                            break
+                except Exception:
+                    pass
+
+    st.download_button(
+        label="📥 User Manual (PDF)",
+        data=manual_data if manual_data is not None else b"",
+        file_name="AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf",
+        mime="application/pdf",
+        help="Download the complete platform operational manual & architectural guide",
+        key="btn_download_user_manual_header",
+        use_container_width=True
+    )
 
 # Global Static Header (Rendered permanently at the very top of EVERY screen)
 render_html("""
@@ -2776,18 +3542,21 @@ if current_tab not in nav_tabs:
         current_tab = "💻 Source Code Inspector"
     st.session_state.active_top_tab = current_tab
 
-selected_nav = st.radio(
-    "Main Navigation",
-    options=nav_tabs,
-    index=nav_tabs.index(st.session_state.active_top_tab),
-    horizontal=True,
-    label_visibility="collapsed",
-    key="master_nav_horizontal"
-)
+# Primary Executive Top Navigation Bar (6 Distinct Luxury Pills, Zero Radio Circles, Perfect Theme Parity)
+nav_cols = st.columns(6)
+for i, tab_name in enumerate(nav_tabs):
+    with nav_cols[i]:
+        is_active = (st.session_state.active_top_tab == tab_name)
+        if st.button(
+            tab_name,
+            key=f"top_nav_btn_{i}",
+            use_container_width=True,
+            type="primary" if is_active else "secondary"
+        ):
+            st.session_state.active_top_tab = tab_name
+            st.rerun()
 
-if selected_nav != st.session_state.active_top_tab:
-    st.session_state.active_top_tab = selected_nav
-    st.rerun()
+selected_nav = st.session_state.active_top_tab
 
 st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
 

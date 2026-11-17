@@ -141,7 +141,7 @@ git push -u origin main
         st.markdown("#### 🔒 SQLite Hosting & Ephemeral Storage Notice")
         st.markdown("""
         > **Academic Architecture Note for Faculty:**
-        > The application uses local SQLite database (`tourism_platform.db`) for lightweight demonstration persistence and security audit logging. 
+        > The application uses local SQLite database (`nids_platform.db`) for lightweight demonstration persistence and security audit logging. 
         > Most PaaS providers (Render, Heroku, Streamlit Cloud) have ephemeral filesystems where disk changes reset upon redeployment. 
         > For enterprise production deployments, SQLite can be swapped to PostgreSQL or Cloud SQL by simply updating connection string in `data_manager.py`.
         """)
@@ -190,7 +190,7 @@ git push -u origin main
         3. Select **CSV**, upload `jira_backlog_import.csv`, and map fields (Summary, Description, Issue Type, Priority, Story Points).
         4. Click **Begin Import** to populate your Jira Scrum Board in seconds!
         """)
-        st.link_button("🌐 Open Atlassian Jira Cloud", "https://jira.atlassian.com", use_container_width=True)
+        st.link_button("🌐 Open Atlassian Jira Cloud Board ↗", "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none", use_container_width=True)
 
     # --------------------------------------------------------------------------
     # 4. CONFLUENCE DASHBOARD
@@ -223,7 +223,7 @@ git push -u origin main
                 else:
                     st.error(f"Documentation file {filename} not found.")
 
-        st.link_button("🌐 Open Atlassian Confluence", "https://confluence.atlassian.com", use_container_width=True)
+        st.link_button("🌐 Open Atlassian Confluence Workspace ↗", "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none", use_container_width=True)
 
     # --------------------------------------------------------------------------
     # 5. FIGMA DASHBOARD
