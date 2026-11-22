@@ -223,7 +223,7 @@ git push -u origin main
                 else:
                     st.error(f"Documentation file {filename} not found.")
 
-        st.link_button("🌐 Open Atlassian Confluence Workspace ↗", "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none", use_container_width=True)
+        st.link_button("🌐 Open Live Confluence Documentation Workspace ↗", "https://aswiniaswini6748.atlassian.net/wiki/external/YWI0MThmODQzMDM4NDFhYzgwMDFhOGFiYmNmNGRiMTU", use_container_width=True)
 
     # --------------------------------------------------------------------------
     # 5. FIGMA DASHBOARD
@@ -277,7 +277,7 @@ git push -u origin main
             * **Screen 3:** Software Engineering Tools Dashboard in navigation tabs.
             * **Screen 8:** Network Traffic Scanner with dual-column layout, animated radar, and threat matrix.
             """)
-            st.link_button("🌐 Open Figma Design Workspace", "https://figma.com", use_container_width=True)
+            st.link_button("🎨 Open Live Interactive Figma Prototype ↗", "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1", use_container_width=True)
 
     # --------------------------------------------------------------------------
     # 6. DOCKER DASHBOARD
@@ -322,6 +322,7 @@ docker logs -f nids-app
 # 4. Stop container
 docker stop nids-app
 """, language="bash")
+            st.link_button("🐳 Open Docker Hub Repository (divyadharshinivs/ai-nids) ↗", "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general", use_container_width=True)
 
     # --------------------------------------------------------------------------
     # 7. KUBERNETES DASHBOARD
@@ -334,6 +335,7 @@ docker stop nids-app
         )
 
         st.info("ℹ️ **Integration Status:** **Configured (Manifests Ready in k8s/)**. Kubernetes cluster is not locally active on this machine, but complete production manifests for Deployment, Service, ConfigMap, and HPA are prepared and validated.")
+        st.link_button("☸️ Open Live Kubernetes Cluster (se-kubernetes.onrender.com) ↗", "https://se-kubernetes.onrender.com", use_container_width=True)
 
         k_tabs = st.tabs(["Deployment Manifest", "Service Manifest", "ConfigMap Manifest", "Autoscaler (HPA)", "CLI Runbook"])
         
@@ -403,6 +405,7 @@ kubectl get pods
             if os.path.exists(ci_path):
                 with open(ci_path, "r", encoding="utf-8") as f:
                     st.code(f.read(), language="yaml")
+            st.link_button("⚡ View Live CI/CD Pipeline Runs on GitHub Actions ↗", "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions", use_container_width=True)
 
         with ci_col2:
             st.markdown("#### 🧪 Test Execution Verification Evidence")
@@ -432,4 +435,4 @@ kubectl get pods
             5. **Pytest Suite:** Runs 5 automated unit & integration test cases.
             6. **Docker Build Check:** Validates containerization without pushing.
             """)
-            st.link_button("🌐 Open GitHub Actions", "https://github.com/features/actions", use_container_width=True)
+            st.link_button("⚡ Open GitHub Actions Pipeline Runs ↗", "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions", use_container_width=True)

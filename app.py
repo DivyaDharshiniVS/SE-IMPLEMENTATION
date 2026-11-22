@@ -175,20 +175,56 @@ st.markdown("""
        ANTIGRAVITY LUXURY TOP NAVIGATION CONTROLS & PILL BUTTON PARITY
        ============================================================================== */
 
-    /* 1. Primary Top Navigation 6-Pill Action Buttons (Identical to Secondary Tabs) */
+    /* 1. Primary Top Navigation 6-Pill Action Buttons (Optimized Breadth & Proportions to Fit Cleanly) */
     div[class*="st-key-top_nav_btn_"] button,
     div[data-testid="column"] div[class*="st-key-top_nav_btn_"] button {
-        padding: 10px 14px !important;
-        font-size: 0.88rem !important;
+        padding: 12px 6px !important;
+        font-size: 0.77rem !important;
         font-weight: 600 !important;
-        letter-spacing: 0.015em !important;
-        white-space: nowrap !important;
-        min-height: 46px !important;
+        letter-spacing: -0.01em !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        min-height: 56px !important;
+        border-radius: 12px !important;
+        width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1.25 !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+    }
+
+    div[class*="st-key-top_nav_btn_"] button *,
+    div[data-testid="column"] div[class*="st-key-top_nav_btn_"] button * {
+        font-size: 0.77rem !important;
+        line-height: 1.25 !important;
+        text-align: center !important;
+        white-space: normal !important;
+    }
+
+    /* Secondary SE Tools 6-Tab Navigation Buttons */
+    div[class*="st-key-btn_se_nav_"] button,
+    div[data-testid="column"] div[class*="st-key-btn_se_nav_"] button {
+        padding: 10px 8px !important;
+        font-size: 0.80rem !important;
+        font-weight: 600 !important;
+        min-height: 48px !important;
         border-radius: 10px !important;
         width: 100% !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
+        line-height: 1.25 !important;
+        text-align: center !important;
+        box-sizing: border-box !important;
+    }
+
+    div[class*="st-key-btn_se_nav_"] button *,
+    div[data-testid="column"] div[class*="st-key-btn_se_nav_"] button * {
+        font-size: 0.80rem !important;
+        line-height: 1.25 !important;
+        text-align: center !important;
     }
 
     /* 2. Strip any generic Streamlit radio borders and completely hide white check circles */
@@ -619,10 +655,10 @@ st.markdown("""
         color: #E2B96F !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 600 !important;
-        font-size: 0.88rem !important;
+        font-size: 0.80rem !important;
         border: 1.5px solid #2d6a4f !important;
         border-radius: 10px !important;
-        padding: 10px 20px !important;
+        padding: 10px 18px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
@@ -643,6 +679,14 @@ st.markdown("""
 
     /* TOP-RIGHT USER MANUAL PDF DOWNLOAD BUTTON & ALL DOWNLOAD BUTTONS */
     div[class*="st-key-btn_download_user_manual_header"] button,
+    div[class*="st-key-btn_download_user_manual_header"] .stDownloadButton button {
+        padding: 12px 18px !important;
+        min-height: 48px !important;
+        border-radius: 12px !important;
+        font-size: 0.80rem !important;
+    }
+
+    div[class*="st-key-btn_download_user_manual_header"] button,
     div[class*="st-key-btn_download_user_manual_header"] .stDownloadButton button,
     div[data-testid="stDownloadButton"] > button,
     div[data-testid="stDownloadButton"] button,
@@ -653,9 +697,9 @@ st.markdown("""
         color: #E2B96F !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-weight: 600 !important;
-        font-size: 0.88rem !important;
+        font-size: 0.80rem !important;
         border-radius: 10px !important;
-        padding: 10px 20px !important;
+        padding: 10px 18px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         display: inline-flex !important;
@@ -681,6 +725,7 @@ st.markdown("""
     div[class*="st-key-btn_download_user_manual_header"] button p {
         color: #E2B96F !important;
         font-weight: 600 !important;
+        font-size: inherit !important;
         transition: color 0.25s ease !important;
     }
 
@@ -1212,15 +1257,19 @@ if "se_links" not in st.session_state:
         "github": "https://github.com/DivyaDharshiniVS/ai-nids-platform",
         "vercel": "https://ai-nids-platform-ashy.vercel.app",
         "jira": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none",
-        "confluence": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none",
-        "figma": "https://www.figma.com",
-        "docker": "https://hub.docker.com/_/python",
-        "k8s": "https://kubernetes.io",
+        "confluence": "https://aswiniaswini6748.atlassian.net/wiki/external/YWI0MThmODQzMDM4NDFhYzgwMDFhOGFiYmNmNGRiMTU",
+        "figma": "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1",
+        "docker": "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general",
+        "k8s": "https://se-kubernetes.onrender.com",
         "actions": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions",
     }
 else:
     st.session_state.se_links["jira"] = "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"
-    st.session_state.se_links["confluence"] = "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"
+    st.session_state.se_links["confluence"] = "https://aswiniaswini6748.atlassian.net/wiki/external/YWI0MThmODQzMDM4NDFhYzgwMDFhOGFiYmNmNGRiMTU"
+    st.session_state.se_links["figma"] = "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"
+    st.session_state.se_links["actions"] = "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions"
+    st.session_state.se_links["k8s"] = "https://se-kubernetes.onrender.com"
+    st.session_state.se_links["docker"] = "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general"
 
 # ==============================================================================
 # 3. SOFTWARE ENGINEERING TOOLS HUB (6 SUB-TABS)
@@ -1516,7 +1565,7 @@ def render_screen_2_jira_confluence():
                 """)
 
     with tab_conf:
-        conf_url = st.session_state.se_links.get("confluence", "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none")
+        conf_url = st.session_state.se_links.get("confluence", "https://aswiniaswini6748.atlassian.net/wiki/external/YWI0MThmODQzMDM4NDFhYzgwMDFhOGFiYmNmNGRiMTU")
         c_ch1, c_ch2 = st.columns([3.6, 1.4])
         with c_ch1:
             st.markdown("### 📚 Confluence Engineering Knowledge Base")
@@ -1559,6 +1608,9 @@ def render_screen_3_figma():
         "</p>",
         unsafe_allow_html=True
     )
+
+    figma_url = st.session_state.se_links.get("figma", "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1")
+    st.link_button("🎨 Open Live Interactive Figma Prototype ↗", url=figma_url, use_container_width=True, type="primary")
 
     # Inline SVG Vector Flowchart: [Wireframe] ➔ [Figma High-Fi UI] ➔ [Streamlit Code]
     render_html("""
@@ -1936,6 +1988,24 @@ def render_screen_5_devops():
     </div>
     """)
 
+    # Live CI/CD Pipeline Telemetry Link Card
+    render_html("""
+    <div style="background: rgba(16, 38, 33, 0.9); border: 1.5px solid #E2B96F; border-radius: 12px; padding: 0.9rem 1.4rem; margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 1.5rem;">⚡</span>
+            <div>
+                <div style="font-size: 0.78rem; font-weight: 700; color: #34D399; text-transform: uppercase; letter-spacing: 0.08em;">Live GitHub Actions CI/CD Telemetry</div>
+                <div style="color: #FFFFFF; font-weight: 700; font-size: 0.98rem; font-family: 'Cinzel', serif;">Automated CI/CD Pipeline Workflows &amp; Runs</div>
+                <div style="color: #CBD5E1; font-size: 0.84rem; font-family: 'Plus Jakarta Sans', sans-serif;">Automated build, flake8 linting, and 5-test PyTest suite running on every commit.</div>
+            </div>
+        </div>
+        <a href="https://github.com/DivyaDharshiniVS/ai-nids-platform/actions" target="_blank" rel="noopener noreferrer" style="background: #E2B96F; color: #0B1714; font-weight: 800; font-size: 0.88rem; padding: 8px 16px; border-radius: 8px; text-decoration: none; white-space: nowrap; border: 1px solid #FDE68A; box-shadow: 0 2px 8px rgba(226, 185, 111, 0.4);">
+            ⚡ Open GitHub Actions Pipeline Runs ↗
+        </a>
+    </div>
+    """)
+    st.link_button("⚡ Open Live GitHub Actions CI/CD Pipeline Runs ↗", "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions", use_container_width=True)
+
     col_d1, col_d2 = st.columns([1, 1])
 
     with col_d1:
@@ -1967,6 +2037,7 @@ tests/test_nids.py::TestNIDSEngine::test_sqlite_persistence_scans_and_alerts PAS
                 <li><strong>Security:</strong> Non-root unprivileged <code>appuser</code> (UID 1000)</li>
                 <li><strong>Healthcheck:</strong> <code>curl -f http://localhost:8501/_stcore/health</code></li>
                 <li><strong>Port Exposure:</strong> 8501 (Streamlit Default)</li>
+                <li><strong>Docker Hub:</strong> <code>https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general</code></li>
             </ul>
             <hr style="border-color: #1a3c34;">
             <h4 style="color: #e2b96f;">Kubernetes Orchestration</h4>
@@ -1974,9 +2045,12 @@ tests/test_nids.py::TestNIDSEngine::test_sqlite_persistence_scans_and_alerts PAS
                 <li><strong>Replicas:</strong> Min 2, Max 6 via Horizontal Pod Autoscaler (HPA)</li>
                 <li><strong>Service:</strong> LoadBalancer on port 80 routing to targetPort 8501</li>
                 <li><strong>Rolling Updates:</strong> MaxSurge 1, MaxUnavailable 0 for zero-downtime</li>
+                <li><strong>Live Cluster:</strong> <code>https://se-kubernetes.onrender.com</code></li>
             </ul>
         </div>
         """)
+        st.link_button("🐳 Open Docker Hub Repository (divyadharshinivs/ai-nids) ↗", "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general", use_container_width=True)
+        st.link_button("☸️ Open Live Kubernetes Cluster (se-kubernetes.onrender.com) ↗", "https://se-kubernetes.onrender.com", use_container_width=True)
 
 # ==============================================================================
 # 10. SCREEN 6: ENGINEERING EVIDENCE & TOOL INTEGRATION LIFECYCLE
@@ -3037,11 +3111,11 @@ def render_screen_se_links():
         {"key": "github", "name": "GitHub", "icon": "🐙", "badge": "VCS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform"},
         {"key": "vercel", "name": "Vercel / Edge", "icon": "▲", "badge": "DEPLOY", "default_url": "https://ai-nids-platform-ashy.vercel.app"},
         {"key": "jira", "name": "Jira", "icon": "📋", "badge": "AGILE", "default_url": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"},
-        {"key": "confluence", "name": "Confluence", "icon": "📚", "badge": "WIKI", "default_url": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"},
-        {"key": "figma", "name": "Figma", "icon": "🎨", "badge": "UI/UX", "default_url": "https://www.figma.com"},
-        {"key": "docker", "name": "Docker", "icon": "🐳", "badge": "CONTAINERS", "default_url": "https://hub.docker.com/_/python"},
-        {"key": "k8s", "name": "Kubernetes", "icon": "☸️", "badge": "ORCHESTRATION", "default_url": "https://kubernetes.io"},
-        {"key": "actions", "name": "GitHub Actions", "icon": "⚡", "badge": "DEVOPS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions"}
+        {"key": "confluence", "name": "Confluence", "icon": "📚", "badge": "WIKI", "default_url": "https://aswiniaswini6748.atlassian.net/wiki/external/YWI0MThmODQzMDM4NDFhYzgwMDFhOGFiYmNmNGRiMTU"},
+        {"key": "figma", "name": "Figma", "icon": "🎨", "badge": "UI/UX", "default_url": "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"},
+        {"key": "docker", "name": "Docker", "icon": "🐳", "badge": "CONTAINERS", "default_url": "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general"},
+        {"key": "k8s", "name": "Kubernetes", "icon": "☸️", "badge": "ORCHESTRATION", "default_url": "https://se-kubernetes.onrender.com"},
+        {"key": "actions", "name": "CI/CD Pipeline (GitHub Actions)", "icon": "⚡", "badge": "DEVOPS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions"}
     ]
 
     # Render 8 Tool Cards in a 3-column responsive grid layout
@@ -3110,10 +3184,13 @@ def render_screen_se_links():
         b1, b2, b3, b4, b5 = st.columns(5)
         with b1:
             st.download_button("📥 Dockerfile", data=dockerfile_content, file_name="Dockerfile", mime="text/plain", use_container_width=True, key="dl_dockerfile_se")
+            st.link_button("🐳 Open Docker Hub ↗", "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general", use_container_width=True)
         with b2:
             st.download_button("📥 K8s YAML", data=k8s_content, file_name="deployment.yaml", mime="text/yaml", use_container_width=True, key="dl_k8s_se")
+            st.link_button("☸️ Open Live K8s ↗", "https://se-kubernetes.onrender.com", use_container_width=True)
         with b3:
             st.download_button("📥 CI workflow", data=ci_content, file_name="ci.yml", mime="text/yaml", use_container_width=True, key="dl_ci_se")
+            st.link_button("⚡ Open Pipeline ↗", "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions", use_container_width=True)
         with b4:
             st.download_button("📥 vercel.json", data=vercel_content, file_name="vercel.json", mime="application/json", use_container_width=True, key="dl_vercel_se")
         with b5:
@@ -3136,6 +3213,35 @@ def render_screen_se_links():
                 st.rerun()
 
     st.markdown("</div>", unsafe_allow_html=True)
+
+    # Dedicated CI/CD Pipeline Live Runs Section below the CI/CD Pipeline in Software Engineering Links
+    st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="background: radial-gradient(circle at 10% 50%, #132E27 0%, #102621 60%, #0D2320 100%); border: 1.5px solid #34D399; border-radius: 14px; padding: 1.2rem 1.6rem; box-shadow: 0 8px 25px rgba(0,0,0,0.45);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <div style="font-size: 0.78rem; font-weight: 700; color: #34D399; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem;">
+                    🔄 Continuous Integration &amp; Deployment Pipeline
+                </div>
+                <h3 style="font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 800; color: #FFFFFF; margin: 0 0 0.25rem 0;">
+                    GitHub Actions CI/CD Pipeline Live Runs
+                </h3>
+                <p style="color: #CBD5E1; font-size: 0.88rem; margin: 0; line-height: 1.5;">
+                    Track live workflow runs, automated PyTest suite results (5 tests, 100% pass rate), and container verification builds.
+                </p>
+                <div style="margin-top: 0.4rem;">
+                    <code style="color: #5EEAD4; background: #0B1714; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">https://github.com/DivyaDharshiniVS/ai-nids-platform/actions</code>
+                </div>
+            </div>
+            <div>
+                <a href="https://github.com/DivyaDharshiniVS/ai-nids-platform/actions" target="_blank" rel="noopener noreferrer" style="background: #E2B96F; color: #0B1714; font-weight: 800; font-size: 0.9rem; padding: 10px 18px; border-radius: 8px; text-decoration: none; display: inline-block; border: 1px solid #FDE68A; box-shadow: 0 4px 14px rgba(226, 185, 111, 0.4);">
+                    ⚡ Open GitHub Actions Runs ↗
+                </a>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.link_button("⚡ Open Live GitHub Actions CI/CD Pipeline Runs ↗", "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions", use_container_width=True)
 
 # ==============================================================================
 # 11C. SCREEN 8: 📱 QR SCANNER
@@ -3543,7 +3649,7 @@ if current_tab not in nav_tabs:
     st.session_state.active_top_tab = current_tab
 
 # Primary Executive Top Navigation Bar (6 Distinct Luxury Pills, Zero Radio Circles, Perfect Theme Parity)
-nav_cols = st.columns(6)
+nav_cols = st.columns(6, gap="small")
 for i, tab_name in enumerate(nav_tabs):
     with nav_cols[i]:
         is_active = (st.session_state.active_top_tab == tab_name)

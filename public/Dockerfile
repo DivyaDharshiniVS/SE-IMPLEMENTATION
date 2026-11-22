@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Python dependencies first for layer caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --default-timeout=1000 --resume-retries 20 --no-cache-dir -r requirements.txt
 
 # Copy application source code
 COPY . .
