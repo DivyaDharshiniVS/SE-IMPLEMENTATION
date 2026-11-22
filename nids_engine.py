@@ -284,7 +284,7 @@ def train_nids_model() -> Tuple[RandomForestClassifier, Dict[str, Any], List[str
 
     # Split into train (75%) and held-out test (25%)
     X_train, X_test, y_train, y_test = train_test_split(
-        X_raw, y_raw, test_size=0.25, random_state=42, stratify=y_raw
+        np.asarray(X_raw), np.asarray(y_raw), test_size=0.25, random_state=42, stratify=y_raw
     )
 
     # Train genuine Random Forest Classifier
