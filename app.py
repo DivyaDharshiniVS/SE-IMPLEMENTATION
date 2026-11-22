@@ -3578,22 +3578,6 @@ def render_auth_modal_card():
 head_spacer, head_download = st.columns([7.8, 2.2])
 with head_download:
     manual_data = get_user_manual_pdf_bytes()
-    if not manual_data:
-        for manual_candidate in [
-            "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf",
-            os.path.join(os.path.dirname(__file__) if "__file__" in globals() else ".", "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
-            os.path.join(os.getcwd(), "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
-            os.path.join(os.path.dirname(__file__) if "__file__" in globals() else ".", "assets", "AI-BASED NETWORK INTRUSION DETECTION SYSTEM USER MANUAL.pdf"),
-            "NIDS_User_Manual.pdf"
-        ]:
-            if os.path.exists(manual_candidate):
-                try:
-                    with open(manual_candidate, "rb") as mf:
-                        manual_data = mf.read()
-                        if manual_data:
-                            break
-                except Exception:
-                    pass
 
     st.download_button(
         label="📥 User Manual (PDF)",
@@ -3637,19 +3621,22 @@ if current_tab not in nav_tabs:
         current_tab = "💻 Source Code Inspector"
     st.session_state.active_top_tab = current_tab
 
-# Primary Executive Top Navigation Bar (6 Distinct Luxury Pills, Zero Radio Circles, Perfect Theme Parity)
+def _set_active_top_tab(tab_label: str):
+    st.session_state.active_top_tab = tab_label
+
+# Primary Executive Top Navigation Bar (Instant single-pass on_click callback, zero double-rerun)
 nav_cols = st.columns(6, gap="small")
 for i, tab_name in enumerate(nav_tabs):
     with nav_cols[i]:
         is_active = (st.session_state.active_top_tab == tab_name)
-        if st.button(
+        st.button(
             tab_name,
             key=f"top_nav_btn_{i}",
             use_container_width=True,
-            type="primary" if is_active else "secondary"
-        ):
-            st.session_state.active_top_tab = tab_name
-            st.rerun()
+            type="primary" if is_active else "secondary",
+            on_click=_set_active_top_tab,
+            args=(tab_name,)
+        )
 
 selected_nav = st.session_state.active_top_tab
 

@@ -865,5 +865,11 @@ def clear_scan_history() -> bool:
     except Exception:
         return True
 
-# Auto-initialize database on import
-init_db()
+_DB_INITIALIZED = False
+def ensure_db_initialized():
+    global _DB_INITIALIZED
+    if not _DB_INITIALIZED:
+        init_db()
+        _DB_INITIALIZED = True
+
+ensure_db_initialized()

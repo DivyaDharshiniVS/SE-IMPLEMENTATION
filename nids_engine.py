@@ -29,6 +29,16 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import train_test_split
 
+try:
+    import streamlit as _st
+    _cache_resource = _st.cache_resource
+    _cache_data = _st.cache_data
+except Exception:
+    def _cache_resource(fn): return fn
+    def _cache_data(fn): return fn
+
+
+
 # Core feature schema expected for network flow analysis
 FEATURE_COLUMNS = [
     "duration",
@@ -63,6 +73,7 @@ _CACHED_METRICS = None
 _CACHED_FEATURE_NAMES = None
 
 
+@_cache_data
 def generate_synthetic_nids_data(n_samples: int = 1500, random_seed: int = 42) -> pd.DataFrame:
     """
     Generates a realistic synthetic network traffic dataset modeled on benchmark NIDS distributions.
@@ -266,6 +277,7 @@ def preprocess_features(df: pd.DataFrame, trained_feature_names: List[str] = Non
     return df_encoded.values.astype(np.float32), feature_names
 
 
+@_cache_resource
 def train_nids_model() -> Tuple[RandomForestClassifier, Dict[str, Any], List[str]]:
     """
     Trains a genuine Scikit-Learn RandomForestClassifier on benchmark network flows.
