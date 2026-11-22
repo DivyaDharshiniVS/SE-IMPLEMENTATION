@@ -3284,7 +3284,7 @@ def render_screen_qr_scanner():
         st.markdown("""
         <div style="margin-top: 1.8rem; text-align: center; width: 100%;">
             <p style="font-family: 'Times New Roman', Times, serif !important; color: #E2B96F !important; font-size: 1.35rem; font-weight: normal !important; font-style: italic; line-height: 1.6; margin: 0;">
-                “Before you trust the link, check the destination”
+                “One quick scan, one verified path—guarding your network from silent wrath.”
             </p>
         </div>
         """, unsafe_allow_html=True)
