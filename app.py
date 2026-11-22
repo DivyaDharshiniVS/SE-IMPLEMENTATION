@@ -1255,7 +1255,7 @@ if "show_auth_modal" not in st.session_state:
 if "se_links" not in st.session_state:
     st.session_state.se_links = {
         "github": "https://github.com/DivyaDharshiniVS/ai-nids-platform",
-        "vercel": "https://ai-nids-platform.streamlit.app",
+        "vercel": "https://ai-nids-platform.streamlit.app/",
         "jira": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none",
         "confluence": "https://aswiniaswini6748.atlassian.net/wiki/external/YWI0MThmODQzMDM4NDFhYzgwMDFhOGFiYmNmNGRiMTU",
         "figma": "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1",
@@ -2035,7 +2035,7 @@ tests/test_nids.py::TestNIDSEngine::test_sqlite_persistence_scans_and_alerts PAS
             <ul style="color: #e0e6ed; font-size: 0.88rem; line-height: 1.6; padding-left: 1.2rem;">
                 <li><strong>Base Image:</strong> <code>python:3.11-slim</code> (&lt; 200MB attack surface)</li>
                 <li><strong>Security:</strong> Non-root unprivileged <code>appuser</code> (UID 1000)</li>
-                <li><strong>Healthcheck:</strong> <code>curl -f http://localhost:8501/_stcore/health</code></li>
+                <li><strong>Healthcheck:</strong> <code>curl -f https://ai-nids-platform.streamlit.app/_stcore/health</code></li>
                 <li><strong>Port Exposure:</strong> 8501 (Streamlit Default)</li>
                 <li><strong>Docker Hub:</strong> <code>https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general</code></li>
             </ul>
@@ -3109,7 +3109,7 @@ def render_screen_se_links():
 
     tools_data = [
         {"key": "github", "name": "GitHub", "icon": "🐙", "badge": "VCS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform"},
-        {"key": "vercel", "name": "Streamlit Cloud", "icon": "▲", "badge": "DEPLOY", "default_url": "https://ai-nids-platform.streamlit.app"},
+        {"key": "vercel", "name": "Streamlit", "icon": "👑", "badge": "DEPLOY", "default_url": "https://ai-nids-platform.streamlit.app/"},
         {"key": "jira", "name": "Jira", "icon": "📋", "badge": "AGILE", "default_url": "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"},
         {"key": "confluence", "name": "Confluence", "icon": "📚", "badge": "WIKI", "default_url": "https://aswiniaswini6748.atlassian.net/wiki/external/YWI0MThmODQzMDM4NDFhYzgwMDFhOGFiYmNmNGRiMTU"},
         {"key": "figma", "name": "Figma", "icon": "🎨", "badge": "UI/UX", "default_url": "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"},
@@ -3295,7 +3295,7 @@ def render_screen_qr_scanner():
 
         # Generate dynamic QR pointing to local machine's network IP
         try:
-            qr = qrcode.QRCode(version=1, box_size=10, border=2)
+            qr = qrcode.QRCode(version=1, box_size=16, border=2)
             qr.add_data(network_url)
             qr.make(fit=True)
             img = qr.make_image(fill_color="black", back_color="white")
@@ -3620,7 +3620,7 @@ with head_download:
 render_html("""
 <div style="text-align: center; padding-top: 0.1rem; padding-bottom: 0.9rem; margin-top: -0.6rem;">
     <h1 style="font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 800; letter-spacing: 0.04em; margin-bottom: 0.65rem; line-height: 1.3;">
-        <a href="http://localhost:8501" target="_self" style="color: #e2b96f; text-decoration: none; transition: all 0.2s ease;">
+        <a href="https://ai-nids-platform.streamlit.app/" target="_self" style="color: #e2b96f; text-decoration: none; transition: all 0.2s ease;">
             AI-BASED NETWORK INTRUSION DETECTION SYSTEM
         </a>
     </h1>
