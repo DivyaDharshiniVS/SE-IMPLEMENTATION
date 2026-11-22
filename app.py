@@ -3279,23 +3279,12 @@ def render_screen_qr_scanner():
         import base64
         import qrcode
 
-        # Determine dynamic network URL accessible from mobile devices
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("8.8.8.8", 80))
-            local_ip = s.getsockname()[0]
-            s.close()
-        except Exception:
-            try:
-                local_ip = socket.gethostbyname(socket.gethostname())
-            except Exception:
-                local_ip = "localhost"
-
-        network_url = f"http://{local_ip}:8501"
+        # Public deployed Streamlit Cloud URL for mobile QR scanning
+        network_url = "https://ai-nids-platform.streamlit.app/"
 
         # Generate dynamic QR pointing to local machine's network IP
         try:
-            qr = qrcode.QRCode(version=1, box_size=16, border=2)
+            qr = qrcode.QRCode(version=2, error_correction=qrcode.constants.ERROR_CORRECT_H, box_size=20, border=2)
             qr.add_data(network_url)
             qr.make(fit=True)
             img = qr.make_image(fill_color="black", back_color="white")
