@@ -1221,12 +1221,10 @@ if "live_packet" not in st.session_state:
     st.session_state.live_packet = dict(st.session_state.active_packet)
 
 if "live_analysis_result" not in st.session_state:
-    st.session_state.live_analysis_result = nids_engine.analyze_single_packet(st.session_state.active_packet)
+    st.session_state.live_analysis_result = None
 
-if "current_nids_df" not in st.session_state or st.session_state.current_nids_df is None:
-    if not os.path.exists("sample_network_traffic.csv"):
-        nids_engine.create_benchmark_csv_if_missing()
-    st.session_state.current_nids_df = pd.read_csv("sample_network_traffic.csv")
+if "current_nids_df" not in st.session_state:
+    st.session_state.current_nids_df = None
 
 if "scan_results_df" not in st.session_state:
     st.session_state.scan_results_df = None
@@ -1341,22 +1339,30 @@ def render_se_tools_hub():
 # 4. SCREEN 0: SOURCE CODE INSPECTOR (HOMESCREEN / IDE VIEW)
 # ==============================================================================
 
+@st.cache_data
+def _read_cached_app_source() -> str:
+    app_code_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app.py")
+    if os.path.exists(app_code_path):
+        with open(app_code_path, "r", encoding="utf-8", errors="replace") as f:
+            return f.read()
+    return ""
+
 def render_screen_0_source_code():
-    # Action Button (Prominent, Center-Aligned / Full-Width Styled Button)
+    # Action Button (Single-pass on_click, zero double-rerun)
     _, col_btn_m, _ = st.columns([1, 2.6, 1])
     with col_btn_m:
         st.markdown('<div class="glow-execute-btn">', unsafe_allow_html=True)
-        if st.button("🚀 Run Intrusion Detection System / Execute Platform ▶", type="primary", use_container_width=True, key="btn_run_platform_main"):
-            st.session_state.active_top_tab = "🛡️ Network Intrusion Platform"
-            st.rerun()
+        st.button(
+            "🚀 Run Intrusion Detection System / Execute Platform ▶",
+            type="primary",
+            use_container_width=True,
+            key="btn_run_platform_main",
+            on_click=_set_active_top_tab,
+            args=("🛡️ Network Intrusion Platform",)
+        )
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Read and display full app.py source code edge-to-edge
-    app_code_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app.py")
-    full_code = ""
-    if os.path.exists(app_code_path):
-        with open(app_code_path, "r", encoding="utf-8", errors="replace") as f:
-            full_code = f.read()
+    full_code = _read_cached_app_source()
 
     # Metrics row for viva inspector
     m_col1, m_col2, m_col3, m_col4 = st.columns(4)
@@ -2204,7 +2210,17 @@ def render_screen_6_tool_integration():
 # 11. SCREEN 7: CORE NETWORK INTRUSION PLATFORM (THE 3 PRIMARY MODULES)
 # ==============================================================================
 
+@st.cache_data
+def _load_cached_benchmark_df():
+    if not os.path.exists("sample_network_traffic.csv"):
+        nids_engine.create_benchmark_csv_if_missing()
+    return pd.read_csv("sample_network_traffic.csv")
+
 def render_screen_7_nids_platform():
+    if st.session_state.get("live_analysis_result") is None:
+        st.session_state.live_analysis_result = nids_engine.analyze_single_packet(st.session_state.active_packet)
+    if st.session_state.get("current_nids_df") is None:
+        st.session_state.current_nids_df = _load_cached_benchmark_df()
     # EXACTLY THREE MAIN MODULE BUTTONS
     st.markdown('<div class="module-nav-header">Select Functional Module</div>', unsafe_allow_html=True)
 
