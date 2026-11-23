@@ -1,0 +1,394 @@
+{
+  "version": 1,
+  "tabs": [
+    {
+      "id": "main",
+      "name": "main",
+      "type": "main"
+    }
+  ],
+  "selectedTabId": "main",
+  "docsByTab": {
+    "main": {
+      "nodes": {
+        "start": {
+          "id": "start",
+          "type": "Oval",
+          "text": "start",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "output_1795448585685",
+          "selected": false,
+          "running": false
+        },
+        "end": {
+          "id": "end",
+          "type": "Oval",
+          "text": "end",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": null,
+          "selected": false,
+          "running": false
+        },
+        "output_1795448585685": {
+          "id": "output_1795448585685",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"AI-BASED INTRUSION DETECTION SYSTEM\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "assign_1795448612742",
+          "selected": false,
+          "running": false
+        },
+        "assign_1795448612742": {
+          "id": "assign_1795448612742",
+          "type": "Rectangle",
+          "kind": "Assignment",
+          "text": "total_flows:=120",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "assign_1795448633424",
+          "selected": false,
+          "running": false
+        },
+        "assign_1795448633424": {
+          "id": "assign_1795448633424",
+          "type": "Rectangle",
+          "kind": "Assignment",
+          "text": "threat_count:=0",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "input_1795448652725",
+          "selected": false,
+          "running": false
+        },
+        "input_1795448652725": {
+          "id": "input_1795448652725",
+          "type": "Parallelogram",
+          "ioKind": "Input",
+          "text": "dataset_mode",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "output_1795448674685",
+          "selected": false,
+          "prompt": "\"Enter 1 to load benchmark dataset or 2 to upload network traffic CSV\"",
+          "running": false
+        },
+        "output_1795448674685": {
+          "id": "output_1795448674685",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Extracting flow attributes: protocol, service, flags, bytes, and connection counts\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "output_1795448684072",
+          "selected": false,
+          "running": false
+        },
+        "output_1795448684072": {
+          "id": "output_1795448684072",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Executing Random Forest Classifier model inference\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "input_1795448688682",
+          "selected": false,
+          "running": false
+        },
+        "input_1795448688682": {
+          "id": "input_1795448688682",
+          "type": "Parallelogram",
+          "ioKind": "Input",
+          "text": "traffic_flag",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "select_1795448747072",
+          "selected": false,
+          "prompt": "\"Enter traffic flag code: 1 for Normal SF, 2 for DoS S0, 3 for Probe REJ, 4 for Unauthorized SSH\"",
+          "running": false
+        },
+        "select_1795448747072": {
+          "id": "select_1795448747072",
+          "type": "Diamond",
+          "kind": "Selection",
+          "text": "traffic_flag = 1",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "end",
+          "yesId": "output_1795448798186",
+          "noId": "assignment_1795448825170",
+          "selected": false,
+          "running": false
+        },
+        "output_1795448798186": {
+          "id": "output_1795448798186",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Status: Normal traffic flow verified. No threat detected.\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": null,
+          "selected": false,
+          "running": false
+        },
+        "assignment_1795448825170": {
+          "id": "assignment_1795448825170",
+          "type": "Rectangle",
+          "kind": "Assignment",
+          "text": "threat_count:=threat_count + 1",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "select_1795448885377",
+          "selected": false,
+          "running": false
+        },
+        "select_1795448885377": {
+          "id": "select_1795448885377",
+          "type": "Diamond",
+          "kind": "Selection",
+          "text": "traffic_flag = 2",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "assign_1795449500539",
+          "yesId": "output_1795448912312",
+          "noId": "selection_1795448939097",
+          "selected": false,
+          "running": false
+        },
+        "output_1795448912312": {
+          "id": "output_1795448912312",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Alert: Denial of Service attack detected. Initiating SYN rate limit rule.\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": null,
+          "selected": false,
+          "running": false
+        },
+        "selection_1795448939097": {
+          "id": "selection_1795448939097",
+          "type": "Diamond",
+          "kind": "Selection",
+          "text": "traffic_flag = 3",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": null,
+          "yesId": "output_1795448956423",
+          "noId": "output_1795448974279",
+          "selected": false,
+          "running": false
+        },
+        "output_1795448956423": {
+          "id": "output_1795448956423",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Alert: PortScan probe detected. Dropping packets from source address.\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": null,
+          "selected": false,
+          "running": false
+        },
+        "output_1795448974279": {
+          "id": "output_1795448974279",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Alert: Unauthorized access attempt detected. Terminating session privileges.\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": null,
+          "selected": false,
+          "running": false
+        },
+        "assign_1795449500539": {
+          "id": "assign_1795449500539",
+          "type": "Rectangle",
+          "kind": "Assignment",
+          "text": "anomaly_rate:=(threat_count / total_flows) * 100",
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "output_1795449506522",
+          "selected": false,
+          "running": false
+        },
+        "output_1795449506522": {
+          "id": "output_1795449506522",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Database: Scan summary and security alerts recorded in SQLite.\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": "output_1795449514805",
+          "selected": false,
+          "running": false
+        },
+        "output_1795449514805": {
+          "id": "output_1795449514805",
+          "type": "Parallelogram",
+          "ioKind": "Output",
+          "text": "\"Inspection complete. Forensic scan report exported successfully.\"",
+          "newLine": true,
+          "H": 60,
+          "W": 90,
+          "X": 0,
+          "Y": 0,
+          "FP": {
+            "left": 0,
+            "right": 0,
+            "height": 0
+          },
+          "successorId": null,
+          "selected": false,
+          "running": false
+        }
+      },
+      "startId": "start",
+      "endId": "end"
+    }
+  }
+}
