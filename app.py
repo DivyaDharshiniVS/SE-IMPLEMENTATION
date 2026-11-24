@@ -1369,7 +1369,7 @@ def render_screen_0_source_code():
     with m_col1:
         st.metric("Total Python LOC", f"{len(full_code.splitlines())} lines")
     with m_col2:
-        st.metric("Architecture Modules", "4 Core + 8 SE Tools")
+        st.metric("Architecture Modules", "4 Core + 9 SE Tools")
     with m_col3:
         st.metric("ML Detection Engine", "Random Forest Classifier")
     with m_col4:
@@ -1851,7 +1851,7 @@ SE OUTPUT/
 ├── nids_engine.py              # Scikit-Learn Random Forest Classifier & Preprocessing
 ├── sample_network_traffic.csv  # 120-Packet Benchmark Ingress Capture
 ├── data_manager.py             # SQLite Persistence Engine (scan_history & alerts)
-├── se_tools_dashboard.py       # 8 SE Capstone Tools Management Dashboard
+├── se_tools_dashboard.py       # 9 SE Capstone Tools Management Dashboard
 ├── requirements.txt            # Python Dependencies
 ├── Dockerfile                  # Production Multi-stage Containerization
 ├── render.yaml                 # Render PaaS Deployment Descriptor
@@ -3131,7 +3131,8 @@ def render_screen_se_links():
         {"key": "figma", "name": "Figma", "icon": "🎨", "badge": "UI/UX", "default_url": "https://www.figma.com/proto/V8DSOd8xeyPuHS2kOFsQ93/Untitled?node-id=5-76&p=f&viewport=370%2C357%2C1&t=NWQbklUhAz4vmwHm-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1"},
         {"key": "docker", "name": "Docker", "icon": "🐳", "badge": "CONTAINERS", "default_url": "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general"},
         {"key": "k8s", "name": "Kubernetes", "icon": "☸️", "badge": "ORCHESTRATION", "default_url": "https://se-kubernetes.onrender.com"},
-        {"key": "actions", "name": "CI/CD Pipeline (GitHub Actions)", "icon": "⚡", "badge": "DEVOPS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions"}
+        {"key": "actions", "name": "CI/CD Pipeline (GitHub Actions)", "icon": "⚡", "badge": "DEVOPS", "default_url": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions"},
+        {"key": "raptor", "name": "RAPTOR", "icon": "🦖", "badge": "FLOWCHART", "default_url": "https://ai-nids-raptor-flowchart.streamlit.app/"}
     ]
 
     # Render 8 Tool Cards in a 3-column responsive grid layout
