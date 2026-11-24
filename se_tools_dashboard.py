@@ -2,7 +2,7 @@
 se_tools_dashboard.py - Software Engineering Tools Management & Verification Dashboard
 AI-Based Network Intrusion Detection System
 
-Provides dedicated, interactive dashboard views for the 8 mandatory Software Engineering tools:
+Provides dedicated, interactive dashboard views for the 9 mandatory Software Engineering tools:
 1. GitHub
 2. Deployment
 3. Jira
@@ -11,6 +11,7 @@ Provides dedicated, interactive dashboard views for the 8 mandatory Software Eng
 6. Docker
 7. Kubernetes
 8. CI/CD Pipeline
+9. RAPTOR
 
 Maintains complete transparency regarding connection status, configuration files,
 test evidence, and user action steps without fabricated claims.
@@ -436,3 +437,44 @@ kubectl get pods
             6. **Docker Build Check:** Validates containerization without pushing.
             """)
             st.link_button("⚡ Open GitHub Actions Pipeline Runs ↗", "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions", use_container_width=True)
+
+    # --------------------------------------------------------------------------
+    # 9. RAPTOR FLOWCHART DASHBOARD
+    # --------------------------------------------------------------------------
+    elif tool_name == "RAPTOR":
+        st.markdown("## 🦖 Tool 09 — RAPTOR Algorithm & Decision Logic Flowchart")
+        st.markdown(
+            "Visual flowchart and algorithmic execution model representing the decision architecture "
+            "and packet classification hierarchy of the AI-Based Network Intrusion Detection System."
+        )
+
+        st.success("✅ **Integration Status:** **Active & Accessible** (Interactive flowchart application deployed and accessible online).")
+
+        raptor_col1, raptor_col2 = st.columns([3, 2])
+        with raptor_col1:
+            st.markdown("#### 🦖 RAPTOR Flowchart Architecture")
+            st.markdown("""
+            * **Flowchart Model:** RAPTOR (Rapid Algorithmic Prototyping Tool for Ordered Reasoning)
+            * **Coverage:**
+                * Packet Ingestion & 12-Feature Extraction
+                * Random Forest / Isolation Forest Decision Boundary Checks
+                * Threat Classification: Normal, DoS SYN Flood, Port Scan, Brute Force SSH, Zero-Day Anomaly
+                * Real-time Severity Rating & Automated SQLite Incident Logging
+            """)
+            st.link_button("🦖 Open RAPTOR Flowchart App ↗", "https://ai-nids-raptor-flowchart.streamlit.app/", use_container_width=True)
+
+        with raptor_col2:
+            st.markdown("#### ⚡ Quick Access")
+            st.markdown("""
+            <div style="background: #132E27; border: 1.5px solid #2D6A4F; border-radius: 12px; padding: 1.2rem; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+                <div style="color: #E2B96F; font-weight: 700; margin-bottom: 0.5rem; font-family: 'Cinzel', serif;">Live Hosted Flowchart</div>
+                <p style="font-size: 0.85rem; color: #CBD5E1; line-height: 1.6; margin-bottom: 0.8rem;">
+                    Launch the interactive Streamlit-based RAPTOR visualization directly in your browser.
+                </p>
+                <code style="color: #5EEAD4; background: #0B1714; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; word-break: break-all;">
+                    https://ai-nids-raptor-flowchart.streamlit.app/
+                </code>
+            </div>
+            """, unsafe_allow_html=True)
+            st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+            st.link_button("🌐 Launch RAPTOR ↗", "https://ai-nids-raptor-flowchart.streamlit.app/", use_container_width=True)

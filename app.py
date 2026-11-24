@@ -1260,6 +1260,7 @@ if "se_links" not in st.session_state:
         "docker": "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general",
         "k8s": "https://se-kubernetes.onrender.com",
         "actions": "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions",
+        "raptor": "https://ai-nids-raptor-flowchart.streamlit.app/",
     }
 else:
     st.session_state.se_links["jira"] = "https://divyadharshinivs.atlassian.net/jira/core/projects/T3S/board?filter=&groupBy=none"
@@ -1268,6 +1269,8 @@ else:
     st.session_state.se_links["actions"] = "https://github.com/DivyaDharshiniVS/ai-nids-platform/actions"
     st.session_state.se_links["k8s"] = "https://se-kubernetes.onrender.com"
     st.session_state.se_links["docker"] = "https://hub.docker.com/repository/docker/divyadharshinivs/ai-nids/general"
+    if "raptor" not in st.session_state.se_links or not st.session_state.se_links["raptor"]:
+        st.session_state.se_links["raptor"] = "https://ai-nids-raptor-flowchart.streamlit.app/"
 
 # ==============================================================================
 # 3. SOFTWARE ENGINEERING TOOLS HUB (6 SUB-TABS)
@@ -1444,7 +1447,7 @@ def render_screen_1_showcase():
         """)
 
     st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
-    st.markdown("### 🛠️ Mandatory Software Engineering Tools Integration (8-Tool Grid)")
+    st.markdown("### 🛠️ Mandatory Software Engineering Tools Integration (9-Tool Grid)")
     col1, col2 = st.columns(2)
 
     tools_part1 = [
@@ -1458,6 +1461,7 @@ def render_screen_1_showcase():
         ("☸️ Tool 06: Kubernetes", "Manifests Validated", "Production k8s manifests for Deployment, LoadBalancer Service, ConfigMap, and Horizontal Pod Autoscaler (HPA).", "#34d399"),
         ("🔄 Tool 07: CI/CD Pipeline", "Automated & Verified", "GitHub Actions workflow (.github/workflows/ci.yml) with 14 automated Pytest cases verified (100% pass rate).", "#34d399"),
         ("🚀 Tool 08: Cloud Deployment", "Descriptors Ready", "Tested and active under Streamlit runtime. Ready for Streamlit Community Cloud and Render PaaS hosting.", "#34d399"),
+        ("🦖 Tool 09: RAPTOR", "Flowchart Active", "Interactive flowchart algorithm visualization for Network Intrusion Detection decision logic.", "#34d399"),
     ]
 
     with col1:
@@ -2066,18 +2070,18 @@ def render_screen_6_tool_integration():
     st.markdown("## 🔗 Engineering Evidence & Tool Integration Lifecycle")
     st.markdown(
         "<p style='color: #e2b96f; font-size: 1.05rem; font-weight: 600; margin-bottom: 0.4rem;'>"
-        "Complete 8-Tool Software Development Life Cycle (SDLC)"
+        "Complete 9-Tool Software Development Life Cycle (SDLC)"
         "</p>"
         "<p style='color: #f1f5f9; font-size: 0.95rem; line-height: 1.6;'>"
-        "The complete end-to-end Software Development Life Cycle (SDLC) linking all 8 mandatory software engineering tools sequentially."
+        "The complete end-to-end Software Development Life Cycle (SDLC) linking all 9 mandatory software engineering tools sequentially."
         "</p>",
         unsafe_allow_html=True
     )
 
-    # Inline Horizontal 8-Node SVG SDLC Flowchart
+    # Inline Horizontal 9-Node SVG SDLC Flowchart
     render_html("""
     <div style="width: 100%; overflow-x: auto; padding: 0.5rem 0; margin-bottom: 1.5rem;">
-      <svg viewBox="0 0 1140 140" style="width: 100%; min-width: 950px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 1280 140" style="width: 100%; min-width: 1080px; height: auto;" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="sdlcGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#132E27" />
@@ -2177,12 +2181,24 @@ def render_screen_6_tool_integration():
 
         <!-- Node 8: Cloud Deploy -->
         <g filter="url(#sdlcGlow)">
-          <rect x="983" y="15" width="115" height="110" rx="10" fill="url(#sdlcGrad)" stroke="#E2B96F" stroke-width="1.8"/>
+          <rect x="983" y="15" width="115" height="110" rx="10" fill="url(#sdlcGrad)" stroke="#2D6A4F" stroke-width="1.5"/>
           <text x="1040" y="32" fill="#E2B96F" font-family="'Cinzel', serif" font-weight="700" font-size="9" text-anchor="middle">TOOL 08</text>
           <text x="1040" y="52" font-size="20" text-anchor="middle">🚀</text>
           <text x="1040" y="70" fill="#FFFFFF" font-family="'Cinzel', serif" font-weight="800" font-size="11" text-anchor="middle">Cloud Deploy</text>
           <text x="1040" y="86" fill="#CBD5E1" font-family="'Plus Jakarta Sans', sans-serif" font-size="8.5" text-anchor="middle">Render / PaaS</text>
           <text x="1040" y="104" fill="#34D399" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" text-anchor="middle">HTTP 200 Live</text>
+        </g>
+
+        <path d="M 1101 70 L 1117 70" stroke="#E2B96F" stroke-width="2" marker-end="url(#arrowSdlc)"/>
+
+        <!-- Node 9: RAPTOR -->
+        <g filter="url(#sdlcGlow)">
+          <rect x="1122" y="15" width="115" height="110" rx="10" fill="url(#sdlcGrad)" stroke="#E2B96F" stroke-width="1.8"/>
+          <text x="1180" y="32" fill="#E2B96F" font-family="'Cinzel', serif" font-weight="700" font-size="9" text-anchor="middle">TOOL 09</text>
+          <text x="1180" y="52" font-size="20" text-anchor="middle">🦖</text>
+          <text x="1180" y="70" fill="#FFFFFF" font-family="'Cinzel', serif" font-weight="800" font-size="11" text-anchor="middle">RAPTOR</text>
+          <text x="1180" y="86" fill="#CBD5E1" font-family="'Plus Jakarta Sans', sans-serif" font-size="8.5" text-anchor="middle">Algorithm Flowchart</text>
+          <text x="1180" y="104" fill="#34D399" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="8.5" text-anchor="middle">Live Logic Sim</text>
         </g>
       </svg>
     </div>
@@ -2202,6 +2218,7 @@ def render_screen_6_tool_integration():
         ["6. Containerization", '<strong style="color: #FFFFFF;">🐳 Docker</strong>', "Runtime & App Dependencies", '<code style="background: #0D2320; color: #E2B96F; padding: 0.15rem 0.45rem; border-radius: 4px;">Dockerfile</code> (Multi-stage, Non-root Appuser)', verified_badge],
         ["7. Cluster Orchestration", '<strong style="color: #FFFFFF;">☸️ Kubernetes</strong>', "Container Image & Scaling Rules", '<code style="background: #0D2320; color: #E2B96F; padding: 0.15rem 0.45rem; border-radius: 4px;">k8s/</code> (Deployment, Service, ConfigMap, HPA)', verified_badge],
         ["8. Cloud Hosting", '<strong style="color: #FFFFFF;">🚀 Streamlit Cloud / Render</strong>', "PaaS Deployment Config", '<code style="background: #0D2320; color: #E2B96F; padding: 0.15rem 0.45rem; border-radius: 4px;">render.yaml</code>, <code style="background: #0D2320; color: #E2B96F; padding: 0.15rem 0.45rem; border-radius: 4px;">Procfile</code>, Healthcheck Endpoint', verified_badge],
+        ["9. Algorithm Simulation", '<strong style="color: #FFFFFF;">🦖 RAPTOR</strong>', "NIDS Detection Logic & Decision Branches", '<code style="background: #0D2320; color: #E2B96F; padding: 0.15rem 0.45rem; border-radius: 4px;">ai-nids-raptor-flowchart.streamlit.app</code> (Interactive Flowchart)', verified_badge],
     ]
     render_contrast_table(headers, rows)
 
@@ -3105,7 +3122,7 @@ def render_screen_7_nids_platform():
 # ==============================================================================
 
 def render_screen_se_links():
-    """Renders the 8-Tool External Links Dashboard & Configuration Generator."""
+    """Renders the 9-Tool External Links Dashboard & Configuration Generator (3x3 Layout)."""
     st.markdown("""
     <div style="background: radial-gradient(circle at 15% 30%, #10332C 0%, #0D2320 50%, #0B1714 100%); border-radius: 18px; padding: 1.8rem 2.2rem; margin-bottom: 1.5rem; border: 1.5px solid rgba(226, 185, 111, 0.35); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         <div style="font-size: 0.82rem; font-weight: 700; color: #FDE68A; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem;">
@@ -3135,7 +3152,7 @@ def render_screen_se_links():
         {"key": "raptor", "name": "RAPTOR", "icon": "🦖", "badge": "FLOWCHART", "default_url": "https://ai-nids-raptor-flowchart.streamlit.app/"}
     ]
 
-    # Render 8 Tool Cards in a 3-column responsive grid layout
+    # Render 9 Tool Cards in a 3-column responsive grid layout (3x3)
     for row_idx in range(0, len(tools_data), 3):
         row_tools = tools_data[row_idx : row_idx + 3]
         cols = st.columns(3)
